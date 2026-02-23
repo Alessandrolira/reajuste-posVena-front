@@ -58,7 +58,7 @@ export default function CardEmpresa({
       </div>
       <div className="flex justify-between items-center text-[0.8em] border-b border-(--cor-borda) pb-4 mb-4">
         <p
-          className={`${status === "Reajustado" ? "bg-(--verde-escuro)" : status === "Em Aberto" ? "bg-(--laranja)" : status == "Em Atraso" ? "bg-(--vermelho)" : "bg-(--cor-borda)"} w-max px-3 py-1 rounded-full text-(--branco) text-bold font-light`}
+          className={`${status === "Reajustado" ? "bg-(--verde-escuro)" : status === "Em Aberto" ? "bg-(--laranja)" : status == "Em Atraso" ? "bg-(--vermelho)" : "bg-(--cor-borda)"} w-max px-3 rounded-full text-(--branco) text-bold font-light`}
         >
           {status}
         </p>

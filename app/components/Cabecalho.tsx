@@ -2,9 +2,13 @@ import Botao from "./Botao";
 
 interface CabecalhoProps {
   eh_home: boolean;
+  onClickToggleEmpresa: () => void;
 }
 
-export default function Cabecalho({ eh_home }: CabecalhoProps) {
+export default function Cabecalho({
+  eh_home,
+  onClickToggleEmpresa,
+}: CabecalhoProps) {
   return (
     <div className="bg-(--branco) py-8.5 px-19.75 flex justify-between items-center">
       <div>
@@ -24,7 +28,7 @@ export default function Cabecalho({ eh_home }: CabecalhoProps) {
         )}
       </div>
       <div>
-        <Botao></Botao>
+        <Botao onClick={() => onClickToggleEmpresa()}></Botao>
       </div>
     </div>
   );
