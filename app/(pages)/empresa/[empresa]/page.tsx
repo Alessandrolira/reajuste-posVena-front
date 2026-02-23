@@ -6,6 +6,7 @@ import CartaoDados from "../../../components/CartaoDados";
 import CartaoValores from "../../../components/CartaoValores";
 import Image from "next/image";
 import Grafico from "../../../components/Grafico";
+import BalaoValor from "../../../components/BalaoValor";
 
 export default function Empresa() {
   const params = useParams();
@@ -74,13 +75,36 @@ export default function Empresa() {
             Negociação de Alta Performance - média de 5,8% de redução
           </p>
         </div>
-        <div className="bg-(--branco) p-10 rounded-lg border border-(--cor-borda)">
-          <p>OFERECIDO VS NEGOCIADO POR ANO</p>
+        <div className="bg-(--branco) p-10 rounded-lg border border-(--cor-borda) mb-8.5">
+          <p className="text-2xl font-thin">OFERECIDO VS NEGOCIADO POR ANO</p>
           <Grafico
             valoresX={["2023", "2024", "2025", "2026"]}
             valoresOperadora={[17.5, 18.0, 17.5, 18.5]}
             valoresCorretora={[10.5, 11.0, 10.5, 11.5]}
           />
+        </div>
+        <div className="bg-(--branco) pt-10 px-10 rounded-lg border border-(--cor-borda) mb-8.5">
+          <p className="text-2xl font-thin">LINHA DO TEMPO</p>
+          <div className="py-10 p-20 flex items-center gap-10">
+            <BalaoValor
+              ano="2023"
+              valorOferecido="17,5%"
+              valorNegociado="10,5%"
+            ></BalaoValor>
+            <div className="h-1 w-20 top-[-30] relative bg-(--cor-borda)"></div>
+            <BalaoValor
+              ano="2024"
+              valorOferecido="18,0%"
+              valorNegociado="11,0%"
+            ></BalaoValor>
+            <div className="h-1 w-20 top-[-30] relative bg-(--cor-borda)"></div>
+            <BalaoValor
+              ano="2025"
+              valorOferecido="17,5%"
+              valorNegociado="10,5%"
+            ></BalaoValor>
+            <div className="h-1 w-20 top-[-30] relative bg-(--cor-borda)"></div>
+          </div>
         </div>
       </div>
     </div>
