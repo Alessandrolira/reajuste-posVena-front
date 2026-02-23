@@ -4,6 +4,7 @@
   --background: #f9f8f8;
   --branco: #fff;
   --verde-escuro: #6cae75;
+  --verde: #527e5c;
   --verde-claro: #c1e1c1;
   --laranja: #f8b270;
   --laranja-claro: #fae7d4;
@@ -13,10 +14,10 @@
   --cor-borda: #c0c0c0;
   --cinza: #d9d9d9;
   --vermelho: #ff1900;
+  --vermelho-claro: #ffcdcd;
 }
 
 body {
   background: var(--background);
-  color: var(--foreground);
   font-family: var(--font-lexend), sans-serif;
 }
