@@ -1,6 +1,7 @@
 import Cabecalho from "./components/Cabecalho";
 import Cartao from "./components/Cartao";
 import Image from "next/image";
+import CardEmpresa from "./components/CardEmpresa";
 
 export default function Home() {
   return (
@@ -23,7 +24,7 @@ export default function Home() {
             valor_reducao="R$ 3.500,00"
           ></Cartao>
         </div>
-        <div className="flex gap-3 w-full">
+        <div className="flex gap-3 w-full mb-8.5">
           {/* 70% */}
           <div className="flex-7">
             <input
@@ -104,6 +105,42 @@ export default function Home() {
               className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2"
             />
           </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <CardEmpresa
+            id={1}
+            nome="Perim Comercio LTDA"
+            operadora="Amil"
+            modalidade="Dental"
+            status="Em Aberto"
+            aniversario="12/05/2025"
+            statusAnterior="Reajustado"
+          ></CardEmpresa>
+          <CardEmpresa
+            id={2}
+            nome="Santa Monica Studios"
+            operadora="Bradesco"
+            modalidade="Saúde"
+            status="Reajustado"
+            aniversario="12/05/2025"
+          ></CardEmpresa>
+          <CardEmpresa
+            id={3}
+            nome="Perim Comercio LTDA"
+            operadora="Sulamerica"
+            modalidade="Dental"
+            status="Em Atraso"
+            aniversario="12/05/2025"
+          ></CardEmpresa>
+          <CardEmpresa
+            id={5}
+            nome="Perim Comercio LTDA"
+            operadora="Bradesco"
+            modalidade="Saúde"
+            status="Em Aberto"
+            aniversario="12/05/2025"
+          ></CardEmpresa>
         </div>
       </div>
     </div>
