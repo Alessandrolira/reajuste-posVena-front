@@ -76,7 +76,11 @@ export default function Empresa() {
         </div>
         <div className="bg-(--branco) p-10 rounded-lg border border-(--cor-borda)">
           <p>OFERECIDO VS NEGOCIADO POR ANO</p>
-          <Grafico />
+          <Grafico
+            valoresX={["2023", "2024", "2025", "2026"]}
+            valoresOperadora={[17.5, 18.0, 17.5, 18.5]}
+            valoresCorretora={[10.5, 11.0, 10.5, 11.5]}
+          />
         </div>
       </div>
     </div>

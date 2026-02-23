@@ -1,6 +1,16 @@
 import Chart from "react-apexcharts";
 
-export default function Grafico() {
+interface GraficoProps {
+  valoresX: string[];
+  valoresOperadora: number[];
+  valoresCorretora: number[];
+}
+
+export default function Grafico({
+  valoresX,
+  valoresOperadora,
+  valoresCorretora,
+}: GraficoProps) {
   const bar = {
     options: {
       chart: {
@@ -26,7 +36,7 @@ export default function Grafico() {
         },
       },
       xaxis: {
-        categories: ["2018", "2019", "2020", "2021", "2022", "2023"],
+        categories: valoresX,
         position: "bottom",
         axisBorder: {
           show: false,
@@ -68,13 +78,13 @@ export default function Grafico() {
     series: [
       {
         name: "Operadora",
-        data: [10, 32, 8, 12, 20, 18],
+        data: valoresOperadora,
         color: "#0156cc",
         opacity: 0.5,
       },
       {
         name: "Corretora",
-        data: [8, 12, 5, 10, 15, 12],
+        data: valoresCorretora,
         color: "#1a3f7d",
       },
     ],
