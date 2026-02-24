@@ -148,11 +148,15 @@ export default function Tabela() {
         </tbody>
       </table>
       <div className="flex justify-center items-center mt-4 mb-4">
-        <IoIosArrowBack size={16} onClick={() => table.previousPage()} />
+        {table.getCanPreviousPage() && (
+          <IoIosArrowBack size={16} onClick={() => table.previousPage()} />
+        )}
         <span className="text-sm text-gray-500">
           {table.getState().pagination.pageIndex + 1} de {table.getPageCount()}
         </span>
-        <IoIosArrowForward size={16} onClick={() => table.nextPage()} />
+        {table.getCanNextPage() && (
+          <IoIosArrowForward size={16} onClick={() => table.nextPage()} />
+        )}
       </div>
     </div>
   );
