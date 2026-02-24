@@ -6,6 +6,7 @@ import {
   flexRender,
   getCoreRowModel,
   getFilteredRowModel,
+  getPaginationRowModel,
   getSortedRowModel,
 } from "@tanstack/react-table";
 import { InteracaoType } from "../../app/types/TypeTabela";
@@ -13,9 +14,10 @@ import { useReactTable } from "@tanstack/react-table";
 import Image from "next/image";
 import { useState } from "react";
 import { IoMdArrowDropdown } from "react-icons/io";
+import { IoIosArrowForward } from "react-icons/io";
+import { IoIosArrowBack } from "react-icons/io";
 
 const columns: ColumnDef<InteracaoType>[] = [
-  { accessorKey: "id", header: "N°" },
   { accessorKey: "ano", header: "Ano" },
   { accessorKey: "tipo", header: "Solicitante" },
   {
@@ -95,6 +97,7 @@ export default function Tabela() {
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     getSortedRowModel: getSortedRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
   });
 
   return (
@@ -144,6 +147,13 @@ export default function Tabela() {
           ))}
         </tbody>
       </table>
+      <div className="flex justify-center items-center mt-4 mb-4">
+        <IoIosArrowBack size={16} onClick={() => table.previousPage()} />
+        <span className="text-sm text-gray-500">
+          {table.getState().pagination.pageIndex + 1} de {table.getPageCount()}
+        </span>
+        <IoIosArrowForward size={16} onClick={() => table.nextPage()} />
+      </div>
     </div>
   );
 }
