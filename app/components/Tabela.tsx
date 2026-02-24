@@ -1,10 +1,18 @@
 "use client";
 
 import dados from "../../app/data.json";
-import { ColumnDef, flexRender, getCoreRowModel } from "@tanstack/react-table";
+import {
+  ColumnDef,
+  flexRender,
+  getCoreRowModel,
+  getFilteredRowModel,
+  getSortedRowModel,
+} from "@tanstack/react-table";
 import { InteracaoType } from "../../app/types/TypeTabela";
 import { useReactTable } from "@tanstack/react-table";
 import Image from "next/image";
+import { useState } from "react";
+import { IoMdArrowDropdown } from "react-icons/io";
 
 const columns: ColumnDef<InteracaoType>[] = [
   { accessorKey: "id", header: "N°" },
@@ -75,26 +83,48 @@ const columns: ColumnDef<InteracaoType>[] = [
 ];
 
 export default function Tabela() {
+  const [globalFilter, setGlobalFilter] = useState("");
+  const [ordem, setOrdem] = useState(false);
+
   const table = useReactTable({
     columns,
     data: dados,
+    state: {
+      globalFilter,
+    },
     getCoreRowModel: getCoreRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
+    getSortedRowModel: getSortedRowModel(),
   });
 
   return (
     <div>
+      <input
+        type="text"
+        value={globalFilter}
+        onChange={(e) => setGlobalFilter(e.target.value)}
+        className="border border-(--cor-borda) rounded-lg py-0.5 px-4 mb-4 focus:outline-none"
+        placeholder="Buscar..."
+      />
       <table className="min-w-full divide-y divide-gray-200">
         <thead className="bg-gray-50">
           <tr>
             {table.getHeaderGroups()[0].headers.map((header) => (
               <th
                 key={header.id}
-                className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-              >
-                {flexRender(
-                  header.column.columnDef.header,
-                  header.getContext(),
+                className="px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider text-center max-w-30 cursor-pointer select-none hover:bg-(--cor-borda) transition-colors duration-200"
+                onClick={() => (
+                  setOrdem(!ordem),
+                  header.column.toggleSorting(ordem)
                 )}
+              >
+                <div className="flex items-center gap-4">
+                  {flexRender(
+                    header.column.columnDef.header,
+                    header.getContext(),
+                  )}
+                  <IoMdArrowDropdown size={16} className="shrink-0" />
+                </div>
               </th>
             ))}
           </tr>
@@ -105,7 +135,7 @@ export default function Tabela() {
               {row.getVisibleCells().map((cell) => (
                 <td
                   key={cell.id}
-                  className="px-6 py-4 whitespace-nowrap text-sm text-gray-500"
+                  className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 max-w-44 text-center"
                 >
                   {flexRender(cell.column.columnDef.cell, cell.getContext())}
                 </td>

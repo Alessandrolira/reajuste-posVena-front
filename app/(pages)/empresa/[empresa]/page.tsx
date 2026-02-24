@@ -113,21 +113,8 @@ export default function Empresa() {
           </div>
         </div>
         <div className="bg-(--branco) pt-10 px-10 rounded-lg border border-(--cor-borda) mb-8.5">
-          <div className="flex items-center mb-8.5 justify-between">
-            <div className="flex gap-4 ">
-              <p className="text-2xl font-thin">HISTÓRICO DE REAJUSTE</p>
-              <select
-                name="anos"
-                id="anos"
-                className="border border-(--cor-borda) rounded-lg px-2 py-1 focus:outline-none"
-              >
-                <option value="">Todos os anos</option>
-                <option value="2023">2023</option>
-                <option value="2024">2024</option>
-                <option value="2025">2025</option>
-                <option value="2026">2026</option>
-              </select>
-            </div>
+          <div className="flex items-center mb-4 justify-between">
+            <p className="text-2xl font-thin">HISTÓRICO DE REAJUSTE</p>
             <Botao
               oQueFaz="+ Nova Interação"
               onClick={() => adicionarInteração()}
