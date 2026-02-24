@@ -1,8 +1,15 @@
 import CardBranco from "./CardBranco";
 import { CgArrowLongRight } from "react-icons/cg";
 import Image from "next/image";
+import { useState } from "react";
 
-export default function ReajusteAberto() {
+interface ReajusteAbertoProps {
+  interacoes: string[];
+}
+
+export default function ReajusteAberto({ interacoes }: ReajusteAbertoProps) {
+  const [menuAberto, setMenuAberto] = useState(false);
+
   return (
     <div className="mb-8.5 bg-[rgb(253,241,230)] rounded-lg py-4.5 px-3.25 flex gap-2.25">
       <div className="basis-2/3 border-r border-(--cor-borda) pr-2.25 flex flex-col">
@@ -14,7 +21,7 @@ export default function ReajusteAberto() {
             <p className="text-xl">(2025)</p>
           </div>
           <div>
-            <p className="bg-(--verde-escuro) text-(--branco) px-3 py-1 rounded-lg cursor-pointer hover:bg-(--verde-claro) transition-colors duration-300">
+            <p className="bg-(--verde-escuro) text-(--branco) px-3 py-1 rounded-lg cursor-pointer hover:bg-(--verde-claro) transition-colors duration-100">
               Aceitar Proposta Inicial
             </p>
           </div>
@@ -35,7 +42,7 @@ export default function ReajusteAberto() {
             </div>
           </div>
           <div className="flex gap-2">
-            <div className="bg-[#ADCCDF] p-3 rounded-lg hover:bg-[#d8e9f3] cursor-pointer  transition-colors duration-300">
+            <div className="bg-[#ADCCDF] p-3 rounded-lg hover:bg-[#d8e9f3] cursor-pointer  transition-colors duration-100">
               <Image
                 src="/documentos.png"
                 height={25}
@@ -43,7 +50,7 @@ export default function ReajusteAberto() {
                 alt="Gráfico de evolução do reajuste"
               ></Image>
             </div>
-            <div className="bg-(--laranja) p-3 rounded-lg hover:bg-(--laranja-claro) cursor-pointer  transition-colors duration-300">
+            <div className="bg-(--laranja) p-3 rounded-lg hover:bg-(--laranja-claro) cursor-pointer  transition-colors duration-100">
               <Image
                 src="/notas.png"
                 height={25}
@@ -55,14 +62,55 @@ export default function ReajusteAberto() {
         </div>
       </div>
       <div className="basis-1/3">
-        <div className="flex items-center justify-between">
-          <p className="text-(--cor-borda) italic font-thin text-sm">
-            Nenhuma neogociação encontrada
-          </p>
-          <button className="bg-(--azul-escuro) text-(--branco) px-3 py-1 rounded-lg hover:bg-(--azul-claro) cursor-pointer  transition-colors duration-300">
-            Abrir Negociação
-          </button>
-        </div>
+        {interacoes.length == 0 ? (
+          <div className="flex items-center justify-between">
+            <p className="text-(--cor-borda) italic font-thin text-sm">
+              Nenhuma neogociação encontrada
+            </p>
+            <button className="bg-(--azul-escuro) text-(--branco) px-3 py-1 rounded-lg hover:bg-[#9ea9b6] cursor-pointer  transition-colors duration-100">
+              Abrir Negociação
+            </button>
+          </div>
+        ) : (
+          <div>
+            <div className="flex justify-between">
+              <div>
+                <p className="font-bold text-lg">Última Interação</p>
+              </div>
+              <div className="flex items-start gap-3">
+                <button className="bg-(--laranja) p-3 rounded-lg hover:bg-(--laranja-claro) cursor-pointer  transition-colors duration-100">
+                  <Image
+                    src="/notas.png"
+                    height={25}
+                    width={25}
+                    alt="Gráfico de evolução do reajuste"
+                  ></Image>
+                </button>
+                {/* BOTÃO MENU */}
+                <div className="relative">
+                  <button
+                    onClick={() => setMenuAberto(!menuAberto)}
+                    className="cursor-pointer"
+                  >
+                    <Image src="/menu.png" height={20} width={20} alt="menu" />
+                  </button>
+
+                  {/* MENU DROPDOWN */}
+                  {menuAberto && (
+                    <div className="absolute right-0 w-60 bg-white rounded-lg shadow-lg border border-gray-200 z-50">
+                      <button className="w-full text-left px-4 py-2 hover:bg-(--azul-escuro) hover:text-(--branco) cursor-pointer  hover:rounded-lg ">
+                        Nova Negociação
+                      </button>
+                      <button className="w-full text-left px-4 py-2 hover:bg-(--verde-escuro) hover:rounded-lg cursor-pointer">
+                        Negociação Aprovada
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

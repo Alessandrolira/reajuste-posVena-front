@@ -11,11 +11,6 @@ export default function Cabecalho({
   onClickToggle,
   nomeEmpresa,
 }: CabecalhoProps) {
-  function adicionarReajuste(empresa: string) {
-    console.log(`Adicionar reajuste para a empresa: ${empresa}`);
-    // Aqui você pode adicionar a lógica para abrir um modal ou redirecionar para uma página de criação de reajuste
-  }
-
   return (
     <div className="bg-(--branco) py-8.5 px-19.75 flex justify-between items-center">
       <div>
