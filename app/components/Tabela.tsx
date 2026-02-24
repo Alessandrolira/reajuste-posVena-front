@@ -1,6 +1,5 @@
 "use client";
 
-import dados from "../../app/data.json";
 import {
   ColumnDef,
   flexRender,
@@ -23,13 +22,26 @@ const columns: ColumnDef<InteracaoType>[] = [
   {
     accessorKey: "porcentagem_proposta",
     header: "Proposta (%)",
-    cell: ({ getValue }) => {
+    cell: ({ getValue, row }) => {
       const valor = getValue<number>();
+      const tipo = row.original.tipo;
 
-      return `${valor.toLocaleString("pt-BR", {
-        minimumFractionDigits: 1,
-        maximumFractionDigits: 2,
-      })}%`;
+      const cor =
+        tipo === "OPERADORA"
+          ? "text-red-500"
+          : tipo === "CORRETORA"
+            ? "text-blue-500"
+            : "text-gray-600";
+
+      return (
+        <span className={cor}>
+          {valor.toLocaleString("pt-BR", {
+            minimumFractionDigits: 1,
+            maximumFractionDigits: 2,
+          })}
+          %
+        </span>
+      );
     },
   },
   { accessorKey: "valor_atual", header: "Valor Atual (R$)" },
@@ -84,13 +96,16 @@ const columns: ColumnDef<InteracaoType>[] = [
   },
 ];
 
-export default function Tabela() {
+interface TabelaProps {
+  dadosRecebidos: InteracaoType[];
+}
+export default function Tabela({ dadosRecebidos }: TabelaProps) {
   const [globalFilter, setGlobalFilter] = useState("");
   const [ordem, setOrdem] = useState(false);
 
   const table = useReactTable({
     columns,
-    data: dados,
+    data: dadosRecebidos ?? [],
     state: {
       globalFilter,
     },

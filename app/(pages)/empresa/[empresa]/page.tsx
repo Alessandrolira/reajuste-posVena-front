@@ -9,8 +9,34 @@ import Grafico from "../../../components/Grafico";
 import BalaoValor from "../../../components/BalaoValor";
 import Botao from "@/app/components/Botao";
 import Tabela from "@/app/components/Tabela";
+import { InteracaoType } from "@/app/types/TypeTabela";
 
 export default function Empresa() {
+  const dados: InteracaoType[] = [
+    {
+      id: 1,
+      ano: "2024",
+      tipo: "OPERADORA",
+      porcentagem_proposta: 8.5,
+      valor_atual: 1200,
+      vl_mensal_resultante: 1296,
+      dt_interacao: "10/02/2026",
+      observacao: "Cliente solicitou revisão após reajuste anual.",
+      is_aceita: true,
+    },
+    {
+      id: 2,
+      ano: "2024",
+      tipo: "CORRETORA",
+      porcentagem_proposta: 8.5,
+      valor_atual: 1200,
+      vl_mensal_resultante: 1296,
+      dt_interacao: "10/02/2026",
+      observacao: "Cliente solicitou revisão após reajuste anual.",
+      is_aceita: true,
+    },
+  ];
+
   const params = useParams();
 
   const empresa = params.empresa as string;
@@ -120,7 +146,7 @@ export default function Empresa() {
               onClick={() => adicionarInteração()}
             ></Botao>
           </div>
-          <Tabela></Tabela>
+          <Tabela dadosRecebidos={dados}></Tabela>
         </div>
       </div>
     </div>
