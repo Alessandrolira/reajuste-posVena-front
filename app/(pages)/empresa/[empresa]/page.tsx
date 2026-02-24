@@ -11,6 +11,10 @@ import Botao from "@/app/components/Botao";
 import Tabela from "@/app/components/Tabela";
 import { InteracaoType } from "@/app/types/TypeTabela";
 import { useState } from "react";
+import InputTexto from "../../../components/InputTexto";
+import BotaoCancelar from "../../../components/BotaoCancelar";
+import BotaoConfirmar from "../../../components/BotaoConfirmar";
+import ReajusteAberto from "../../../components/ReajusteAberto";
 
 export default function Empresa() {
   const [toggleAdicionarReajuste, setToggleAdicionarReajuste] = useState(false);
@@ -22,6 +26,10 @@ export default function Empresa() {
 
   function adicionarInteração() {
     console.log("sim");
+  }
+
+  function adicionarReajuste() {
+    console.log("Adicionando reajuste");
   }
 
   const dados: InteracaoType[] = [
@@ -59,7 +67,41 @@ export default function Empresa() {
       {toggleAdicionarReajuste && (
         <div className="fixed inset-0 bg-(--preto)/80 flex items-center justify-center z-50">
           <div className="bg-(--branco) rounded-lg p-8 w-full max-w-2xl">
-            <p>ola</p>
+            <h2 className="text-xl font-bold mb-4">Adicionar Novo Reajuste</h2>
+            <form className="flex flex-col gap-5">
+              <InputTexto
+                label="Ano Rejuste"
+                name="anoReajuste"
+                placeholder="2024 (ano atual)"
+                tipoData="text"
+              ></InputTexto>
+              <InputTexto
+                label="% Oferecida pela operadora"
+                name="porcentagemOferecida"
+                placeholder="Ex: 16,5"
+                tipoData="text"
+              ></InputTexto>
+              <InputTexto
+                label="Data do envio da proposta"
+                placeholder="Ex: 01/01/2024"
+                name="dataEnvio"
+                tipoData="data"
+              ></InputTexto>
+              <InputTexto
+                label="Valor atual da fatura do cliente (R$)"
+                name="valorFatura"
+                placeholder="Ex: R$ 27.840,00"
+                tipoData="text"
+              ></InputTexto>
+              <div className="flex justify-end gap-3">
+                <BotaoCancelar
+                  onClickToggleEmpresa={ToggleReajuste}
+                ></BotaoCancelar>
+                <BotaoConfirmar
+                  onClickAdicionarEmpresa={adicionarReajuste}
+                ></BotaoConfirmar>
+              </div>
+            </form>
           </div>
         </div>
       )}
@@ -68,6 +110,7 @@ export default function Empresa() {
         onClickToggle={ToggleReajuste}
       ></Cabecalho>
       <div className="py-8.5 px-19.75 ">
+        <ReajusteAberto></ReajusteAberto>
         <p className="text-2xl mb-8.5">Ultimo Reajuste (2025)</p>
         <div className="flex gap-8 mb-8.5">
           <CartaoDados

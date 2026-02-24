@@ -7,7 +7,7 @@
   --verde: #527e5c;
   --verde-claro: #c1e1c1;
   --laranja: #f8b270;
-  --laranja-claro: #fae7d4;
+  --laranja-claro: #ffecda;
   --azul-escuro: #2c3e50;
   --azul-claro: #3498db;
   --preto: #000;
@@ -15,6 +15,7 @@
   --cinza: #d9d9d9;
   --vermelho: #ff1900;
   --vermelho-claro: #ffcdcd;
+  --amarelo-reajuste: #fff7f0;
 }
 
 body {
