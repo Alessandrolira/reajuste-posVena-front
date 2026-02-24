@@ -1,0 +1,35 @@
+[
+  {
+    "id": 1,
+    "ano": "2023",
+    "tipo": "OPERADORA",
+    "porcentagem_proposta": 16.5,
+    "valor_atual": 132600,
+    "vl_mensal_resultante": 154089,
+    "dt_interacao": "2023-10-01",
+    "observacao": "orem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset ",
+    "is_aceita": false
+  },
+  {
+    "id": 2,
+    "ano": "2022",
+    "tipo": "OPERADORA",
+    "porcentagem_proposta": 10.0,
+    "valor_atual": 120000,
+    "vl_mensal_resultante": 132000,
+    "dt_interacao": "2022-10-01",
+    "observacao": "Reajuste anual conforme contrato vigente. Proposta baseada na inflação acumulada do período.",
+    "is_aceita": true
+  },
+  {
+    "id": 3,
+    "ano": "2021",
+    "tipo": "OPERADORA",
+    "porcentagem_proposta": 8.0,
+    "valor_atual": 111000,
+    "vl_mensal_resultante": 119880,
+    "dt_interacao": "2021-10-01",
+    "observacao": "Reajuste anual conforme contrato vigente. Proposta baseada na inflação acumulada do período.",
+    "is_aceita": true
+  }
+]

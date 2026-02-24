@@ -5,6 +5,7 @@ import { useState } from "react";
 interface InputListaProps {
   label: string;
   valores: string[];
+  placeholder?: string;
 }
 
 export default function InputLista({ label, valores }: InputListaProps) {

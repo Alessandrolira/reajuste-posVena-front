@@ -9,6 +9,7 @@ import InputTexto from "./components/InputTexto";
 import InputLista from "./components/InputLista";
 import BotaoCancelar from "./components/BotaoCancelar";
 import BotaoConfirmar from "./components/BotaoConfirmar";
+import Link from "next/link";
 
 export default function Home() {
   const [toggleAdicionarEmpresa, setToggleAdicionarEmpresa] = useState(false);
@@ -178,15 +179,17 @@ export default function Home() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          <CardEmpresa
-            id={1}
-            nome="Perim Comercio LTDA"
-            operadora="Amil"
-            modalidade="Dental"
-            status="Em Aberto"
-            aniversario="12/05/2025"
-            statusAnterior="Reajustado"
-          ></CardEmpresa>
+          <Link href="/empresa/Perim Comercio LTDA">
+            <CardEmpresa
+              id={1}
+              nome="Perim Comercio LTDA"
+              operadora="Amil"
+              modalidade="Dental"
+              status="Em Aberto"
+              aniversario="12/05/2025"
+              statusAnterior="Reajustado"
+            ></CardEmpresa>
+          </Link>
 
           <CardEmpresa
             id={2}

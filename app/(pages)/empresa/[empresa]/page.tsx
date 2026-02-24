@@ -7,12 +7,18 @@ import CartaoValores from "../../../components/CartaoValores";
 import Image from "next/image";
 import Grafico from "../../../components/Grafico";
 import BalaoValor from "../../../components/BalaoValor";
+import Botao from "@/app/components/Botao";
+import Tabela from "@/app/components/Tabela";
 
 export default function Empresa() {
   const params = useParams();
 
   const empresa = params.empresa as string;
   const empresaFormatada = empresa.replace(/%20/g, " ").toUpperCase();
+
+  function adicionarInteração() {
+    console.log("Interação registrada: Exportar Relatório");
+  }
 
   return (
     <div>
@@ -105,6 +111,29 @@ export default function Empresa() {
             ></BalaoValor>
             <div className="h-1 w-20 top-[-30] relative bg-(--cor-borda)"></div>
           </div>
+        </div>
+        <div className="bg-(--branco) pt-10 px-10 rounded-lg border border-(--cor-borda) mb-8.5">
+          <div className="flex items-center mb-8.5 justify-between">
+            <div className="flex gap-4 ">
+              <p className="text-2xl font-thin">HISTÓRICO DE REAJUSTE</p>
+              <select
+                name="anos"
+                id="anos"
+                className="border border-(--cor-borda) rounded-lg px-2 py-1 focus:outline-none"
+              >
+                <option value="">Todos os anos</option>
+                <option value="2023">2023</option>
+                <option value="2024">2024</option>
+                <option value="2025">2025</option>
+                <option value="2026">2026</option>
+              </select>
+            </div>
+            <Botao
+              oQueFaz="+ Nova Interação"
+              onClick={() => adicionarInteração()}
+            ></Botao>
+          </div>
+          <Tabela></Tabela>
         </div>
       </div>
     </div>
