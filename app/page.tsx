@@ -74,10 +74,7 @@ export default function Home() {
           </div>
         </div>
       )}
-      <Cabecalho
-        eh_home={true}
-        onClickToggleEmpresa={ToggleEmpresa}
-      ></Cabecalho>
+      <Cabecalho eh_home={true} onClickToggle={ToggleEmpresa}></Cabecalho>
       <div className="py-8.5 px-19.75">
         <div className="flex w-full justify-between mb-8.5">
           <Cartao icon="companhia" corBg="cinza" valor="5"></Cartao>

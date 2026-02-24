@@ -2,13 +2,13 @@ import Botao from "./Botao";
 
 interface CabecalhoProps {
   eh_home?: boolean;
-  onClickToggleEmpresa?: () => void;
+  onClickToggle?: () => void;
   nomeEmpresa?: string;
 }
 
 export default function Cabecalho({
   eh_home,
-  onClickToggleEmpresa,
+  onClickToggle,
   nomeEmpresa,
 }: CabecalhoProps) {
   function adicionarReajuste(empresa: string) {
@@ -46,16 +46,16 @@ export default function Cabecalho({
         )}
       </div>
       <div>
-        {onClickToggleEmpresa && eh_home && (
+        {onClickToggle && eh_home && (
           <Botao
-            onClick={() => onClickToggleEmpresa()}
+            onClick={() => onClickToggle()}
             oQueFaz="+ Nova Empresa"
           ></Botao>
         )}
         <div>
-          {nomeEmpresa && (
+          {onClickToggle && nomeEmpresa && (
             <Botao
-              onClick={() => adicionarReajuste(nomeEmpresa)}
+              onClick={() => onClickToggle()}
               oQueFaz="+ Novo Reajuste"
             ></Botao>
           )}

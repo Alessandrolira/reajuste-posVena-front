@@ -10,8 +10,20 @@ import BalaoValor from "../../../components/BalaoValor";
 import Botao from "@/app/components/Botao";
 import Tabela from "@/app/components/Tabela";
 import { InteracaoType } from "@/app/types/TypeTabela";
+import { useState } from "react";
 
 export default function Empresa() {
+  const [toggleAdicionarReajuste, setToggleAdicionarReajuste] = useState(false);
+
+  function ToggleReajuste() {
+    console.log("ENTROU AQUI");
+    setToggleAdicionarReajuste(!toggleAdicionarReajuste);
+  }
+
+  function adicionarInteração() {
+    console.log("sim");
+  }
+
   const dados: InteracaoType[] = [
     {
       id: 1,
@@ -42,13 +54,19 @@ export default function Empresa() {
   const empresa = params.empresa as string;
   const empresaFormatada = empresa.replace(/%20/g, " ").toUpperCase();
 
-  function adicionarInteração() {
-    console.log("Interação registrada: Exportar Relatório");
-  }
-
   return (
     <div>
-      <Cabecalho nomeEmpresa={empresaFormatada}></Cabecalho>
+      {toggleAdicionarReajuste && (
+        <div className="fixed inset-0 bg-(--preto)/80 flex items-center justify-center z-50">
+          <div className="bg-(--branco) rounded-lg p-8 w-full max-w-2xl">
+            <p>ola</p>
+          </div>
+        </div>
+      )}
+      <Cabecalho
+        nomeEmpresa={empresaFormatada}
+        onClickToggle={ToggleReajuste}
+      ></Cabecalho>
       <div className="py-8.5 px-19.75 ">
         <p className="text-2xl mb-8.5">Ultimo Reajuste (2025)</p>
         <div className="flex gap-8 mb-8.5">
