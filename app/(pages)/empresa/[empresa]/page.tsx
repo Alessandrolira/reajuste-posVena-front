@@ -110,7 +110,7 @@ export default function Empresa() {
         onClickToggle={ToggleReajuste}
       ></Cabecalho>
       <div className="py-8.5 px-19.75 ">
-        <ReajusteAberto interacoes={["ola", "teste"]}></ReajusteAberto>
+        <ReajusteAberto interacoes={["asdasd"]}></ReajusteAberto>
         <p className="text-2xl mb-8.5">Ultimo Reajuste (2025)</p>
         <div className="flex gap-8 mb-8.5">
           <CartaoDados
