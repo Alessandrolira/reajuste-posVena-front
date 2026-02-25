@@ -10,7 +10,7 @@ import BalaoValor from "../../../components/BalaoValor";
 import Botao from "@/app/components/Botao";
 import Tabela from "@/app/components/Tabela";
 import { InteracaoType } from "@/app/types/TypeTabela";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import InputTexto from "../../../components/InputTexto";
 import BotaoCancelar from "../../../components/BotaoCancelar";
 import BotaoConfirmar from "../../../components/BotaoConfirmar";
@@ -18,11 +18,33 @@ import ReajusteAberto from "../../../components/ReajusteAberto";
 
 export default function Empresa() {
   const [toggleAdicionarReajuste, setToggleAdicionarReajuste] = useState(false);
+  const [toggleDescricao, setToggleDescricao] = useState(false);
+  const [toggleDescricaoInteracao, setToggleDescricaoInteracao] =
+    useState(false);
+  const [editandoObservacaoReajuste, setEditandoObservacaoReajuste] =
+    useState(false);
+  const [observacaoReajuste, setObservacaoReajuste] = useState("");
 
   function ToggleReajuste() {
-    console.log("ENTROU AQUI");
     setToggleAdicionarReajuste(!toggleAdicionarReajuste);
   }
+
+  function ToggleDescricaoReajuste() {
+    setToggleDescricao(!toggleDescricao);
+  }
+
+  function ToggleDescricaoInteracao() {
+    setToggleDescricaoInteracao(!toggleDescricaoInteracao);
+  }
+
+  function ToggleEditarObservacaoReajuste() {
+    setEditandoObservacaoReajuste(!editandoObservacaoReajuste);
+  }
+
+  const salvarObservacao = () => {
+    // aqui depois você pode chamar API
+    setEditandoObservacaoReajuste(false);
+  };
 
   function adicionarInteração() {
     console.log("sim");
@@ -105,12 +127,92 @@ export default function Empresa() {
           </div>
         </div>
       )}
+      {toggleDescricao && (
+        <div className="fixed inset-0 bg-(--preto)/80 flex items-center justify-center z-50">
+          <div className="bg-(--branco) rounded-lg p-8 w-full max-w-2xl">
+            <div className="flex justify-between items-center mb-4">
+              <p className="text-xl font-bold">Observações do reajuste</p>
+              <button
+                onClick={ToggleDescricaoReajuste}
+                className="cursor-pointer"
+              >
+                <Image
+                  src="/fechar.png"
+                  alt="Fechar"
+                  width={20}
+                  height={20}
+                ></Image>
+              </button>
+            </div>
+            {editandoObservacaoReajuste ? (
+              <div>
+                <textarea
+                  className="border border-(--cor-borda) rounded-lg h-80 px-4 py-4 w-full"
+                  value={observacaoReajuste}
+                  onChange={(e) => setObservacaoReajuste(e.target.value)}
+                />
+
+                <div className="flex justify-end gap-4 mt-4">
+                  <button
+                    className="border px-4 py-2 rounded-lg"
+                    onClick={() => setEditandoObservacaoReajuste(false)}
+                  >
+                    Cancelar
+                  </button>
+
+                  <button
+                    className="bg-(--verde-escuro) text-white px-4 py-2 rounded-lg"
+                    onClick={() => setEditandoObservacaoReajuste(false)}
+                  >
+                    Salvar
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <div>
+                <p className="border border-(--cor-borda) rounded-lg h-80 px-4 py-4 whitespace-pre-wrap">
+                  {observacaoReajuste || "Nenhuma observação cadastrada."}
+                </p>
+
+                <div className="flex justify-end mt-8">
+                  <button
+                    className="border px-4 py-2 rounded-lg"
+                    onClick={() => setEditandoObservacaoReajuste(true)}
+                  >
+                    Editar
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+      {toggleDescricaoInteracao && (
+        <div className="fixed inset-0 bg-(--preto)/80 flex items-center justify-center z-50">
+          <div className="bg-(--branco) rounded-lg p-8 w-full max-w-2xl">
+            <p>Descricao da Interacao</p>
+            <button>
+              <Image
+                src="/fechar.png"
+                alt="Fechar"
+                width={100}
+                height={100}
+              ></Image>
+            </button>
+          </div>
+        </div>
+      )}
       <Cabecalho
         nomeEmpresa={empresaFormatada}
         onClickToggle={ToggleReajuste}
       ></Cabecalho>
       <div className="py-8.5 px-19.75 ">
-        <ReajusteAberto interacoes={["asdasd"]}></ReajusteAberto>
+        <ReajusteAberto
+          interacoes={["asdasd"]}
+          onClickDescricao={ToggleDescricaoReajuste}
+          onClickDescricaoInteracao={ToggleDescricaoInteracao}
+          ultimaInteracaoAceita={true}
+        ></ReajusteAberto>
         <p className="text-2xl mb-8.5">Ultimo Reajuste (2025)</p>
         <div className="flex gap-8 mb-8.5">
           <CartaoDados

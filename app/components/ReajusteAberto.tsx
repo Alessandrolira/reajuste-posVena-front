@@ -2,13 +2,30 @@ import CardBranco from "./CardBranco";
 import { CgArrowLongRight } from "react-icons/cg";
 import Image from "next/image";
 import { useState } from "react";
+import { PiLinkSimple } from "react-icons/pi";
 
 interface ReajusteAbertoProps {
+  onClickDescricao: () => void;
+  onClickDescricaoInteracao: () => void;
   interacoes: string[];
+  // dataAberturaInteracao: string;
+  // solicitanteInteracao: string;
+  // propostaInteracao: number;
+  ultimaInteracaoAceita?: boolean;
 }
 
-export default function ReajusteAberto({ interacoes }: ReajusteAbertoProps) {
+export default function ReajusteAberto({
+  interacoes,
+  ultimaInteracaoAceita,
+  onClickDescricao,
+  onClickDescricaoInteracao,
+}: ReajusteAbertoProps) {
   const [menuAberto, setMenuAberto] = useState(false);
+
+  function handleAnotacaoClick() {
+    onClickDescricaoInteracao();
+    setMenuAberto(false);
+  }
 
   return (
     <div className="mb-8.5 bg-[rgb(253,241,230)] rounded-lg py-4.5 px-3.25 flex gap-2.25">
@@ -21,8 +38,18 @@ export default function ReajusteAberto({ interacoes }: ReajusteAbertoProps) {
             <p className="text-xl">(2025)</p>
           </div>
           <div>
-            <p className="bg-(--verde-escuro) text-(--branco) px-3 py-1 rounded-lg cursor-pointer hover:bg-(--verde-claro) transition-colors duration-100">
-              Aceitar Proposta Inicial
+            <p
+              className={` ${
+                interacoes.length == 0 && ultimaInteracaoAceita == null
+                  ? "bg-(--verde-escuro) text-(--branco) hover:bg-(--verde-claro) cursor-pointer"
+                  : ultimaInteracaoAceita == null
+                    ? "bg-(--cor-borda) text-(--branco) cursor-not-allowed"
+                    : "bg-(--verde-escuro) text-(--branco) hover:bg-(--verde-claro) cursor-pointer"
+              }  px-3 py-1 rounded-lg   transition-colors duration-100`}
+            >
+              {ultimaInteracaoAceita == null
+                ? "Aceitar Proposta Inicial"
+                : "Finalizar Reajuste"}
             </p>
           </div>
         </div>
@@ -42,22 +69,35 @@ export default function ReajusteAberto({ interacoes }: ReajusteAbertoProps) {
             </div>
           </div>
           <div className="flex gap-2">
-            <div className="bg-[#ADCCDF] p-3 rounded-lg hover:bg-[#d8e9f3] cursor-pointer  transition-colors duration-100">
-              <Image
-                src="/documentos.png"
-                height={25}
-                width={25}
-                alt="Gráfico de evolução do reajuste"
-              ></Image>
+            <div className="relative group">
+              <button
+                disabled
+                className="bg-[#a0a0a0] p-3 rounded-lg opacity-40 cursor-not-allowed"
+              >
+                <PiLinkSimple size={25} />
+              </button>
+
+              <div
+                className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 
+               bg-gray-800 text-white text-xs px-3 py-1 rounded 
+               opacity-0 group-hover:opacity-100 
+               transition-opacity duration-200 
+               whitespace-nowrap pointer-events-none"
+              >
+                Funcionalidade em desenvolvimento
+              </div>
             </div>
-            <div className="bg-(--laranja) p-3 rounded-lg hover:bg-(--laranja-claro) cursor-pointer  transition-colors duration-100">
+            <button
+              className="bg-(--laranja) p-3 rounded-lg hover:bg-(--laranja-claro) cursor-pointer  transition-colors duration-100"
+              onClick={onClickDescricao}
+            >
               <Image
                 src="/notas.png"
                 height={25}
                 width={25}
                 alt="Gráfico de evolução do reajuste"
               ></Image>
-            </div>
+            </button>
           </div>
         </div>
       </div>
@@ -96,7 +136,10 @@ export default function ReajusteAberto({ interacoes }: ReajusteAbertoProps) {
                       <button className="w-full text-left px-4 py-2 hover:bg-(--verde-escuro) hover:rounded-lg cursor-pointer">
                         Negociação Aprovada
                       </button>
-                      <button className="w-full text-left px-4 py-2 hover:bg-(--laranja) hover:rounded-lg cursor-pointer flex gap-2">
+                      <button
+                        className="w-full text-left px-4 py-2 hover:bg-(--laranja) hover:rounded-lg cursor-pointer flex gap-2"
+                        onClick={handleAnotacaoClick}
+                      >
                         <Image
                           src="/notas.png"
                           alt="notas"
