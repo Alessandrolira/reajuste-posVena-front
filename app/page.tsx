@@ -176,17 +176,15 @@ export default function Home() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          <Link href="/empresa/Perim Comercio LTDA">
-            <CardEmpresa
-              id={1}
-              nome="Perim Comercio LTDA"
-              operadora="Amil"
-              modalidade="Dental"
-              status="Em Aberto"
-              aniversario="12/05/2025"
-              statusAnterior="Reajustado"
-            ></CardEmpresa>
-          </Link>
+          <CardEmpresa
+            id={1}
+            nome="Perim Comercio LTDA"
+            operadora="Amil"
+            modalidade="Dental"
+            status="Em Aberto"
+            aniversario="12/05/2025"
+            statusAnterior="Reajustado"
+          ></CardEmpresa>
 
           <CardEmpresa
             id={2}

@@ -10,11 +10,12 @@ import BalaoValor from "../../../components/BalaoValor";
 import Botao from "@/app/components/Botao";
 import Tabela from "@/app/components/Tabela";
 import { InteracaoType } from "@/app/types/TypeTabela";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import InputTexto from "../../../components/InputTexto";
 import BotaoCancelar from "../../../components/BotaoCancelar";
 import BotaoConfirmar from "../../../components/BotaoConfirmar";
 import ReajusteAberto from "../../../components/ReajusteAberto";
+import InputLista from "../../../components/InputLista";
 
 export default function Empresa() {
   const [toggleAdicionarReajuste, setToggleAdicionarReajuste] = useState(false);
@@ -24,6 +25,12 @@ export default function Empresa() {
   const [editandoObservacaoReajuste, setEditandoObservacaoReajuste] =
     useState(false);
   const [observacaoReajuste, setObservacaoReajuste] = useState("");
+  const [editandoObservacaoInteracao, setEditandoObservacaoInteracao] =
+    useState(false);
+  const [observacaoInteracao, setObservacaoInteracao] = useState("");
+  const [toggleNovaNegociacao, setToggleNovaNegociacao] = useState(false);
+  const [toggleNegociacaoAprovada, setToggleNegociacaoAprovada] =
+    useState(false);
 
   function ToggleReajuste() {
     setToggleAdicionarReajuste(!toggleAdicionarReajuste);
@@ -37,14 +44,13 @@ export default function Empresa() {
     setToggleDescricaoInteracao(!toggleDescricaoInteracao);
   }
 
-  function ToggleEditarObservacaoReajuste() {
-    setEditandoObservacaoReajuste(!editandoObservacaoReajuste);
+  function ToggleNovaNegociacao() {
+    setToggleNovaNegociacao(!toggleNovaNegociacao);
   }
 
-  const salvarObservacao = () => {
-    // aqui depois você pode chamar API
-    setEditandoObservacaoReajuste(false);
-  };
+  function ToggleNegociacaoAprovada() {
+    setToggleNegociacaoAprovada(!toggleNegociacaoAprovada);
+  }
 
   function adicionarInteração() {
     console.log("sim");
@@ -52,6 +58,14 @@ export default function Empresa() {
 
   function adicionarReajuste() {
     console.log("Adicionando reajuste");
+  }
+
+  function adicionarNovaNegociacao() {
+    console.log("teste");
+  }
+
+  function adicionarNegociacaoAprovada() {
+    console.log("Negociacao aprovada");
   }
 
   const dados: InteracaoType[] = [
@@ -190,15 +204,132 @@ export default function Empresa() {
       {toggleDescricaoInteracao && (
         <div className="fixed inset-0 bg-(--preto)/80 flex items-center justify-center z-50">
           <div className="bg-(--branco) rounded-lg p-8 w-full max-w-2xl">
-            <p>Descricao da Interacao</p>
-            <button>
-              <Image
-                src="/fechar.png"
-                alt="Fechar"
-                width={100}
-                height={100}
-              ></Image>
-            </button>
+            <div className="flex justify-between items-center mb-4">
+              <p className="text-xl font-bold">Observações da Negociação</p>
+              <button
+                onClick={ToggleDescricaoInteracao}
+                className="cursor-pointer"
+              >
+                <Image
+                  src="/fechar.png"
+                  alt="Fechar"
+                  width={20}
+                  height={20}
+                ></Image>
+              </button>
+            </div>
+            {editandoObservacaoInteracao ? (
+              <div>
+                <textarea
+                  className="border border-(--cor-borda) rounded-lg h-80 px-4 py-4 w-full"
+                  value={observacaoInteracao}
+                  onChange={(e) => setObservacaoInteracao(e.target.value)}
+                />
+
+                <div className="flex justify-end gap-4 mt-4">
+                  <button
+                    className="border px-4 py-2 rounded-lg"
+                    onClick={() => setEditandoObservacaoInteracao(false)}
+                  >
+                    Cancelar
+                  </button>
+
+                  <button
+                    className="bg-(--verde-escuro) text-white px-4 py-2 rounded-lg"
+                    onClick={() => setEditandoObservacaoInteracao(false)}
+                  >
+                    Salvar
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <div>
+                <p className="border border-(--cor-borda) rounded-lg h-80 px-4 py-4 whitespace-pre-wrap">
+                  {observacaoInteracao || "Nenhuma observação cadastrada."}
+                </p>
+
+                <div className="flex justify-end mt-8">
+                  <button
+                    className="border px-4 py-2 rounded-lg"
+                    onClick={() => setEditandoObservacaoInteracao(true)}
+                  >
+                    Editar
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+      {toggleNovaNegociacao && (
+        <div className="fixed inset-0 bg-(--preto)/80 flex items-center justify-center z-50">
+          <div className="bg-(--branco) rounded-lg p-8 w-full max-w-2xl">
+            <h2 className="text-xl font-bold mb-4">Negociação</h2>
+            <div className="flex flex-col gap-4">
+              <InputLista
+                label="Solicitante"
+                valores={["OPERADORA", "CORRETORA"]}
+              ></InputLista>
+              <InputTexto
+                label="Proposta (%)"
+                placeholder="Ex: 12,5%"
+                name="porcentagem_proposta"
+                tipoData="text"
+              ></InputTexto>
+              <InputTexto
+                label="Data da proposta"
+                placeholder="Ex: 01/02/2023"
+                name="data_proposta"
+                tipoData="data"
+              ></InputTexto>
+              <div>
+                <p>Observações</p>
+                <textarea
+                  name="observacaoInteracao"
+                  id="observacaoInteracao"
+                  className="border border-(--cor-borda) rounded-lg h-60 px-4 py-4 w-full"
+                ></textarea>
+              </div>
+              <div className="flex gap-2 justify-end">
+                <BotaoCancelar
+                  onClickToggleEmpresa={ToggleNovaNegociacao}
+                ></BotaoCancelar>
+                <BotaoConfirmar
+                  onClickAdicionarEmpresa={adicionarNovaNegociacao}
+                ></BotaoConfirmar>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+      {toggleNegociacaoAprovada && (
+        <div className="fixed inset-0 bg-(--preto)/80 flex items-center justify-center z-50">
+          <div className="bg-(--branco) rounded-lg p-8 w-full max-w-2xl">
+            <h2 className="text-xl font-bold mb-4">Negociação Fechada</h2>
+            <div className="flex flex-col gap-4">
+              <InputTexto
+                label="Data do aceite"
+                placeholder="Ex: 01/02/2024"
+                tipoData="data"
+                name="dataAceite"
+              ></InputTexto>
+              <div>
+                <p>Motivo do Encerramento</p>
+                <textarea
+                  name="motivoAceite"
+                  id="motivoAceite"
+                  className="border border-(--cor-borda) rounded-lg h-60 px-4 py-4 w-full"
+                ></textarea>
+              </div>
+              <div className="flex gap-2 justify-end">
+                <BotaoCancelar
+                  onClickToggleEmpresa={ToggleNegociacaoAprovada}
+                ></BotaoCancelar>
+                <BotaoConfirmar
+                  onClickAdicionarEmpresa={adicionarNegociacaoAprovada}
+                ></BotaoConfirmar>
+              </div>
+            </div>
           </div>
         </div>
       )}
@@ -211,6 +342,8 @@ export default function Empresa() {
           interacoes={["asdasd"]}
           onClickDescricao={ToggleDescricaoReajuste}
           onClickDescricaoInteracao={ToggleDescricaoInteracao}
+          onClickNovaNegociacao={ToggleNovaNegociacao}
+          onClickNegociacaoAprovada={ToggleNegociacaoAprovada}
           ultimaInteracaoAceita={true}
         ></ReajusteAberto>
         <p className="text-2xl mb-8.5">Ultimo Reajuste (2025)</p>

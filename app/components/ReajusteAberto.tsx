@@ -12,6 +12,8 @@ interface ReajusteAbertoProps {
   // solicitanteInteracao: string;
   // propostaInteracao: number;
   ultimaInteracaoAceita?: boolean;
+  onClickNovaNegociacao: () => void;
+  onClickNegociacaoAprovada: () => void;
 }
 
 export default function ReajusteAberto({
@@ -19,11 +21,23 @@ export default function ReajusteAberto({
   ultimaInteracaoAceita,
   onClickDescricao,
   onClickDescricaoInteracao,
+  onClickNovaNegociacao,
+  onClickNegociacaoAprovada,
 }: ReajusteAbertoProps) {
   const [menuAberto, setMenuAberto] = useState(false);
 
   function handleAnotacaoClick() {
     onClickDescricaoInteracao();
+    setMenuAberto(false);
+  }
+
+  function handleNovaNegociacaoClick() {
+    onClickNovaNegociacao();
+    setMenuAberto(false);
+  }
+
+  function handleNegociacaoAprovada() {
+    onClickNegociacaoAprovada();
     setMenuAberto(false);
   }
 
@@ -130,10 +144,16 @@ export default function ReajusteAberto({
                   {/* MENU DROPDOWN */}
                   {menuAberto && (
                     <div className="absolute right-0 w-60 bg-white rounded-lg shadow-lg border border-gray-200 z-50">
-                      <button className="w-full text-left px-4 py-2 hover:bg-(--azul-escuro) hover:text-(--branco) cursor-pointer  hover:rounded-lg ">
+                      <button
+                        className="w-full text-left px-4 py-2 hover:bg-(--azul-escuro) hover:text-(--branco) cursor-pointer  hover:rounded-lg "
+                        onClick={handleNovaNegociacaoClick}
+                      >
                         Nova Negociação
                       </button>
-                      <button className="w-full text-left px-4 py-2 hover:bg-(--verde-escuro) hover:rounded-lg cursor-pointer">
+                      <button
+                        className="w-full text-left px-4 py-2 hover:bg-(--verde-escuro) hover:rounded-lg cursor-pointer"
+                        onClick={handleNegociacaoAprovada}
+                      >
                         Negociação Aprovada
                       </button>
                       <button

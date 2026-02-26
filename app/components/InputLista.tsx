@@ -20,13 +20,12 @@ export default function InputLista({ label, valores }: InputListaProps) {
         value={selecionado}
         onChange={(e) => setSelecionado(e.target.value)}
         className={`border rounded-lg w-full px-2 py-1 focus:outline-none ${
-          selecionado === "" ||
-          selecionado === `Selecione uma ${label.toLowerCase()}`
+          selecionado === "" || selecionado === `Selecione `
             ? "text-(--cor-borda)"
             : "border-(--cor-borda)"
         }`}
       >
-        <option value="">{`Selecione uma ${label.toLowerCase()}`}</option>
+        <option value="">{`Selecione `}</option>
         {valores.map((valor, index) => (
           <option key={index} value={index + 1}>
             {valor}
