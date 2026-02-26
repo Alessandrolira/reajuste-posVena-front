@@ -185,7 +185,6 @@ export default function Home() {
             aniversario="12/05/2025"
             statusAnterior="Reajustado"
           ></CardEmpresa>
-
           <CardEmpresa
             id={2}
             nome="Santa Monica Studios"

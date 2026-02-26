@@ -14,7 +14,6 @@ interface CardEmpresaProps {
 }
 
 export default function CardEmpresa({
-  id,
   nome,
   operadora,
   modalidade,
