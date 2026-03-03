@@ -1,5 +1,5 @@
 interface BotaoConfirmarProps {
-  onClickAdicionarEmpresa: () => void;
+  onClickAdicionarEmpresa?: () => void;
 }
 
 export default function BotaoConfirmar({

@@ -12,6 +12,8 @@ export default function InputTexto({
   name,
   placeholder,
   tipoData,
+  valor,
+  onChange,
 }: InputTextoProps) {
   return (
     <div className="w-full gap-1 flex flex-col">
@@ -23,6 +25,8 @@ export default function InputTexto({
         name={name}
         className="border border-(--cor-borda) rounded-lg w-full px-2 py-1 placeholder:text-(--cor-borda) placeholder:font-light focus:outline-none"
         placeholder={placeholder}
+        value={valor}
+        onChange={onChange}
       ></input>
     </div>
   );
