@@ -34,6 +34,8 @@ export default function Home() {
   const [statusContrato, setStatusContrato] = useState("");
   const [porte, setPorte] = useState("");
 
+  const [busca, setBusca] = useState("");
+
   function ToggleEmpresa() {
     setToggleAdicionarEmpresa(!toggleAdicionarEmpresa);
   }
@@ -136,6 +138,10 @@ export default function Home() {
       console.log(error);
     }
   }
+
+  const empresasFiltradas = cardsEmpresa.filter((empresa) =>
+    empresa.nomeEmpresa.toLowerCase().includes(busca.toLowerCase()),
+  );
 
   return (
     <div>
@@ -257,6 +263,8 @@ export default function Home() {
           <div className="flex-7">
             <input
               type="text"
+              value={busca}
+              onChange={(e) => setBusca(e.target.value)}
               className="
                 w-full
                 border border-(--cor-borda)
@@ -273,70 +281,10 @@ export default function Home() {
               placeholder="Buscar empresa..."
             />
           </div>
-
-          <div className="relative flex-2">
-            <select
-              className="
-                w-full
-                appearance-none
-                border border-(--cor-borda)
-                rounded-lg
-                py-2
-                pl-4
-                pr-10
-                bg-(--background)
-                focus:outline-none
-                text-(--cor-borda)
-              "
-            >
-              <option value="">Todas as operadoras</option>
-              <option value="">Amil</option>
-              <option value="">Bradesco</option>
-              <option value="">Sulamerica</option>
-            </select>
-
-            <Image
-              width={16}
-              height={16}
-              src="/abrir-lista.png"
-              alt="Abrir"
-              className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2"
-            />
-          </div>
-
-          <div className="relative flex-1">
-            <select
-              className="
-              w-full
-              appearance-none
-              border border-(--cor-borda)
-              rounded-lg
-              py-2
-              pl-4
-              pr-10
-              bg-(--background)
-              focus:outline-none
-              text-(--cor-borda)
-            "
-            >
-              <option value="">Todos os anos</option>
-              <option value="">2025</option>
-              <option value="">2026</option>
-              <option value="">2027</option>
-            </select>
-
-            <Image
-              width={16}
-              height={16}
-              src="/abrir-lista.png"
-              alt="Abrir"
-              className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2"
-            />
-          </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {cardsEmpresa.map((cardEmpresa) => {
+          {empresasFiltradas.map((cardEmpresa) => {
             console.log(cardEmpresa.modalidade);
 
             return (
