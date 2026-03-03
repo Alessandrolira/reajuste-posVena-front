@@ -17,6 +17,7 @@ export default function Home() {
   const [toggleAdicionarEmpresa, setToggleAdicionarEmpresa] = useState(false);
   const [analistas, setAnalistas] = useState([]);
   const [render, setRender] = useState(false);
+  const [totalEmpresas, setTotalEmpresas] = useState(0);
 
   const [nomeEmpresa, setNomeEmpresa] = useState("");
   const [idAnalista, setIdAnalista] = useState(0);
@@ -41,6 +42,17 @@ export default function Home() {
     }
 
     buscarAnalistas();
+
+    async function buscarTotalEmpresas() {
+      try {
+        const response = await api.get("/empresas/totalEmpresas");
+        setTotalEmpresas(response.data);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+
+    buscarTotalEmpresas();
   }, [render]);
 
   async function AdicionarEmpresa(e: React.FormEvent<HTMLFormElement>) {
@@ -148,7 +160,11 @@ export default function Home() {
       <Cabecalho eh_home={true} onClickToggle={ToggleEmpresa}></Cabecalho>
       <div className="py-8.5 px-19.75">
         <div className="flex w-full justify-between mb-8.5">
-          <Cartao icon="companhia" corBg="cinza" valor="5"></Cartao>
+          <Cartao
+            icon="companhia"
+            corBg="cinza"
+            valor={String(totalEmpresas)}
+          ></Cartao>
           <Cartao
             icon="progressao"
             corBg="verde-claro"
