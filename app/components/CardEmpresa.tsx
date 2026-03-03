@@ -8,9 +8,10 @@ interface CardEmpresaProps {
   modalidade: string;
   status: string;
   aniversario: string;
-  ultimoReajuste?: string;
+  ultimoReajuste?: number;
   economiaTotal?: string;
   statusAnterior?: string;
+  porcentagemUltimoReajuste?: number;
 }
 
 export default function CardEmpresa({
@@ -22,6 +23,7 @@ export default function CardEmpresa({
   ultimoReajuste,
   economiaTotal,
   statusAnterior,
+  porcentagemUltimoReajuste,
 }: CardEmpresaProps) {
   return (
     <Link href={`/empresa/${nome}`}>
@@ -52,14 +54,14 @@ export default function CardEmpresa({
         <div className="flex gap-4 text-[0.8em] mb-5">
           <p>{operadora}</p>
           <p
-            className={`${modalidade === "Dental" ? "text-(--azul-claro)" : "text-(--azul-claro)"}`}
+            className={`${modalidade === "DENTAL" ? "text-(--azul-claro)" : "text-(--laranja)"}`}
           >
             {modalidade}
           </p>
         </div>
         <div className="flex justify-between items-center text-[0.8em] border-b border-(--cor-borda) pb-4 mb-4">
           <p
-            className={`${status === "Reajustado" ? "bg-(--verde-escuro)" : status === "Em Aberto" ? "bg-(--laranja)" : status == "Em Atraso" ? "bg-(--vermelho)" : "bg-(--cor-borda)"} w-max px-3 rounded-full text-(--branco) text-bold font-light`}
+            className={`${status === "REAJUSTADO" ? "bg-(--verde-escuro)" : status === "PENDENTE" ? "bg-(--laranja)" : status == "EM ATRASO" ? "bg-(--vermelho)" : status == "EM NEGOCIACAO" ? "bg-(--azul-claro)" : "bg-(--cor-borda)"} w-max px-3 rounded-full text-(--branco) text-bold font-light`}
           >
             {status}
           </p>
@@ -67,10 +69,13 @@ export default function CardEmpresa({
         </div>
         <div className="flex justify-between">
           {ultimoReajuste ? (
-            <div>
+            <div className="flex justify-between w-full h-12">
               <div>
                 <p>Ultimo Reajuste</p>
-                <p>{ultimoReajuste}</p>
+                <div className="flex gap-2">
+                  <p>({ultimoReajuste})</p>
+                  <p>{porcentagemUltimoReajuste}%</p>
+                </div>
               </div>
               <div className="items-end text-end">
                 <p>Economia Total</p>
@@ -86,7 +91,7 @@ export default function CardEmpresa({
               </div>
             </div>
           ) : (
-            <div>
+            <div className="h-12">
               <p className="text-[0.8em] text-(--cor-borda) font-thin italic">
                 Nenhum reajuste realizado
               </p>

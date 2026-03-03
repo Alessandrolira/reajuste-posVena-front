@@ -12,12 +12,19 @@ import BotaoConfirmar from "./components/BotaoConfirmar";
 import { api } from "./services/api";
 import { AnalistaType } from "./types/AnalistaType";
 import { formatarData } from "./utils/date";
+import { MelhorNegociacaoType } from "./types/MelhorNegociacaoType";
+import { CardsEmpresasType } from "./types/CardsEmpresas";
 
 export default function Home() {
   const [toggleAdicionarEmpresa, setToggleAdicionarEmpresa] = useState(false);
   const [analistas, setAnalistas] = useState([]);
   const [render, setRender] = useState(false);
   const [totalEmpresas, setTotalEmpresas] = useState(0);
+  const [economiaTotal, setEconomiaTotal] = useState(0);
+  const [mediaReducao, setMediaReducao] = useState(0);
+  const [melhorNegociacao, setMelhorNegociacao] =
+    useState<MelhorNegociacaoType>();
+  const [cardsEmpresa, setCardsEmpresa] = useState<CardsEmpresasType[]>([]);
 
   const [nomeEmpresa, setNomeEmpresa] = useState("");
   const [idAnalista, setIdAnalista] = useState(0);
@@ -53,12 +60,54 @@ export default function Home() {
     }
 
     buscarTotalEmpresas();
+
+    async function buscarEconomiaTotal() {
+      try {
+        const response = await api.get("/empresas/economiaTotal");
+        setEconomiaTotal(response.data);
+      } catch (error) {
+        console.log(error);
+      }
+    }
+
+    buscarEconomiaTotal();
+
+    async function buscarMediaReducao() {
+      try {
+        const response = await api.get("/empresas/mediaReducao");
+        setMediaReducao(response.data);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+
+    buscarMediaReducao();
+
+    async function buscarMelhorReajuste() {
+      try {
+        const response = await api.get("/empresas/melhorNegociacao");
+        setMelhorNegociacao(response.data);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+
+    buscarMelhorReajuste();
+
+    async function buscarCardsEmpresa() {
+      try {
+        const response = await api.get("/empresas/buscarCardsEmpresa");
+        setCardsEmpresa(response.data);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+
+    buscarCardsEmpresa();
   }, [render]);
 
   async function AdicionarEmpresa(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-
-    console.log(aniversario);
 
     try {
       const response = await api.post("/empresas", {
@@ -72,6 +121,16 @@ export default function Home() {
       });
 
       ToggleEmpresa();
+
+      setNomeEmpresa("");
+      setIdAnalista(0);
+      setOperadora("");
+      setAniversario("");
+      setModalidade("");
+      setStatusContrato("");
+      setPorte("");
+
+      setRender(!render);
       console.log("Empresa Cadastrada ", response.data);
     } catch (error) {
       console.log(error);
@@ -168,16 +227,30 @@ export default function Home() {
           <Cartao
             icon="progressao"
             corBg="verde-claro"
-            valor="R$ 12.500,00"
+            valor={`R$ ${economiaTotal.toFixed(2).replace(".", ",")}`}
           ></Cartao>
-          <Cartao icon="contrato" corBg="cinza" valor="12%"></Cartao>
           <Cartao
-            icon="medalha"
-            corBg="laranja-claro"
-            eh_destaque
-            valor="Grupo Alpha S.A."
-            valor_reducao="R$ 3.500,00"
+            icon="contrato"
+            corBg="cinza"
+            valor={`${mediaReducao.toFixed(2).replace(".", ",")}%`}
           ></Cartao>
+          {melhorNegociacao == null ? (
+            <Cartao
+              icon="medalha"
+              corBg="laranja-claro"
+              eh_destaque
+              valor="Nenhuma negociacão encontrada"
+              valor_reducao={``}
+            ></Cartao>
+          ) : (
+            <Cartao
+              icon="medalha"
+              corBg="laranja-claro"
+              eh_destaque
+              valor={melhorNegociacao.nomeEmpresa}
+              valor_reducao={`R$ ${melhorNegociacao?.valorEconomizado.toFixed(2).replace(".", ",")}`}
+            ></Cartao>
+          )}
         </div>
         <div className="flex gap-3 w-full mb-8.5">
           {/* 70% */}
@@ -263,39 +336,27 @@ export default function Home() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          <CardEmpresa
-            id={1}
-            nome="Perim Comercio LTDA"
-            operadora="Amil"
-            modalidade="Dental"
-            status="Em Aberto"
-            aniversario="12/05/2025"
-            statusAnterior="Reajustado"
-          ></CardEmpresa>
-          <CardEmpresa
-            id={2}
-            nome="Santa Monica Studios"
-            operadora="Bradesco"
-            modalidade="Saúde"
-            status="Reajustado"
-            aniversario="12/05/2025"
-          ></CardEmpresa>
-          <CardEmpresa
-            id={3}
-            nome="Perim Comercio LTDA"
-            operadora="Sulamerica"
-            modalidade="Dental"
-            status="Em Atraso"
-            aniversario="12/05/2025"
-          ></CardEmpresa>
-          <CardEmpresa
-            id={5}
-            nome="Perim Comercio LTDA"
-            operadora="Bradesco"
-            modalidade="Saúde"
-            status="Em Aberto"
-            aniversario="12/05/2025"
-          ></CardEmpresa>
+          {cardsEmpresa.map((cardEmpresa) => {
+            console.log(cardEmpresa.modalidade);
+
+            return (
+              <CardEmpresa
+                key={cardEmpresa.idEmpresa}
+                id={cardEmpresa.idEmpresa}
+                nome={cardEmpresa.nomeEmpresa}
+                operadora={cardEmpresa.operadora}
+                modalidade={cardEmpresa.modalidade}
+                status={cardEmpresa.statusRenovacao.replace("_", " ")}
+                aniversario={formatarData(cardEmpresa.aniversario).replaceAll(
+                  "-",
+                  "/",
+                )}
+                ultimoReajuste={cardEmpresa.ultimoReajuste}
+                economiaTotal={`R$ ${cardEmpresa.economiaTotal}`}
+                porcentagemUltimoReajuste={16}
+              ></CardEmpresa>
+            );
+          })}
         </div>
       </div>
     </div>
