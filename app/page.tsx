@@ -35,6 +35,7 @@ export default function Home() {
   const [porte, setPorte] = useState("");
 
   const [busca, setBusca] = useState("");
+  const [statusFiltro, setStatusFiltro] = useState("");
 
   function ToggleEmpresa() {
     setToggleAdicionarEmpresa(!toggleAdicionarEmpresa);
@@ -139,9 +140,18 @@ export default function Home() {
     }
   }
 
-  const empresasFiltradas = cardsEmpresa.filter((empresa) =>
-    empresa.nomeEmpresa.toLowerCase().includes(busca.toLowerCase()),
-  );
+  const empresasFiltradas = cardsEmpresa.filter((empresa) => {
+    const termoBusca = busca.toLowerCase();
+
+    const correspondeNome = empresa.nomeEmpresa
+      .toLowerCase()
+      .includes(termoBusca);
+
+    const correspondeStatus =
+      !statusFiltro || empresa.statusRenovacao === statusFiltro;
+
+    return correspondeNome && correspondeStatus;
+  });
 
   return (
     <div>
@@ -279,6 +289,28 @@ export default function Home() {
                 bg-position-[10px_center]
               "
               placeholder="Buscar empresa..."
+            />
+          </div>
+
+          <div className="relative flex-2">
+            <select
+              value={statusFiltro}
+              onChange={(e) => setStatusFiltro(e.target.value)}
+              className="w-full appearance-none border border-(--cor-borda) rounded-lg py-2 pl-4 pr-10 bg-(--background) focus:outline-none text-(--cor-borda)"
+            >
+              <option value="">Status</option>
+              <option value="EM_NEGOCIACAO">EM NEGOCIACAO</option>
+              <option value="REAJUSTADO">REAJUSTADO</option>
+              <option value="PENDENTE">PENDENTE</option>
+              <option value="EM_ATRASO">EM ATRASO</option>
+            </select>
+
+            <Image
+              width={16}
+              height={16}
+              src="/abrir-lista.png"
+              alt="Abrir"
+              className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2"
             />
           </div>
         </div>
