@@ -12,8 +12,14 @@ export type EmpresaType = {
   valorUltimaFatura: number;
   valorFechado: number;
   valorComPrimeiraPorcentagem: number;
-  porcentagensIniciaisFinais: [
-    { operadora: number; corretora: number; motivoEncerramento: string },
+  mediaDeReducao: number;
+  porcentagensFinaisIniciais: [
+    {
+      operadora: number;
+      corretora: number;
+      motivoEncerramento: string;
+      ano: number;
+    },
   ];
   linhaTempo: [
     { ano: number; porcentagemFechada: number; economiaPorcentagem: number },

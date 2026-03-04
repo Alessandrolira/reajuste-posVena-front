@@ -411,7 +411,8 @@ export default function Empresa() {
                 height={20}
               ></Image>
               <p className="text-(--laranja)">
-                Negociação de Alta Performance - média de 5,8% de redução
+                Negociação de Alta Performance - média de{" "}
+                {empresaEncontrada?.mediaDeReducao.toFixed(2)}% de redução
               </p>
             </div>
             <div className="bg-(--branco) p-10 rounded-lg border border-(--cor-borda) mb-8.5">
@@ -419,9 +420,21 @@ export default function Empresa() {
                 OFERECIDO VS NEGOCIADO POR ANO
               </p>
               <Grafico
-                valoresX={["2023", "2024", "2025", "2026"]}
-                valoresOperadora={[17.5, 18.0, 17.5, 18.5]}
-                valoresCorretora={[10.5, 11.0, 10.5, 11.5]}
+                valoresX={
+                  empresaEncontrada?.porcentagensFinaisIniciais.map(
+                    (porcentagem) => String(porcentagem.ano),
+                  ) ?? []
+                }
+                valoresOperadora={
+                  empresaEncontrada?.porcentagensFinaisIniciais.map(
+                    (porcentagem) => porcentagem.operadora,
+                  ) ?? []
+                }
+                valoresCorretora={
+                  empresaEncontrada?.porcentagensFinaisIniciais.map(
+                    (porcentagem) => porcentagem.corretora,
+                  ) ?? []
+                }
               />
             </div>
             <div className="bg-(--branco) pt-10 px-10 rounded-lg border border-(--cor-borda) mb-8.5">
