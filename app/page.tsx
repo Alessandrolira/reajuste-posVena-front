@@ -139,20 +139,37 @@ export default function Home() {
       console.log(error);
     }
   }
+  const empresasFiltradas = cardsEmpresa
+    .filter((empresa) => {
+      const termoBusca = busca.toLowerCase();
 
-  const empresasFiltradas = cardsEmpresa.filter((empresa) => {
-    const termoBusca = busca.toLowerCase();
+      const correspondeNome = empresa.nomeEmpresa
+        .toLowerCase()
+        .includes(termoBusca);
 
-    const correspondeNome = empresa.nomeEmpresa
-      .toLowerCase()
-      .includes(termoBusca);
+      const correspondeStatus =
+        !statusFiltro || empresa.statusRenovacao === statusFiltro;
 
-    const correspondeStatus =
-      !statusFiltro || empresa.statusRenovacao === statusFiltro;
+      return correspondeNome && correspondeStatus;
+    })
+    .sort((a, b) => {
+      // Coloca EM_ATRASO no topo
+      if (
+        a.statusRenovacao === "EM_ATRASO" &&
+        b.statusRenovacao !== "EM_ATRASO"
+      ) {
+        return -1;
+      }
 
-    return correspondeNome && correspondeStatus;
-  });
+      if (
+        a.statusRenovacao !== "EM_ATRASO" &&
+        b.statusRenovacao === "EM_ATRASO"
+      ) {
+        return 1;
+      }
 
+      return 0; // mantém ordem normal para os outros
+    });
   return (
     <div>
       {toggleAdicionarEmpresa && (

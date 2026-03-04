@@ -20,7 +20,7 @@ const columns: ColumnDef<InteracaoType>[] = [
   { accessorKey: "ano", header: "Ano" },
   { accessorKey: "tipo", header: "Solicitante" },
   {
-    accessorKey: "porcentagem_proposta",
+    accessorKey: "porcentagemProposta",
     header: "Proposta (%)",
     cell: ({ getValue, row }) => {
       const valor = getValue<number>();
@@ -44,9 +44,49 @@ const columns: ColumnDef<InteracaoType>[] = [
       );
     },
   },
-  { accessorKey: "valor_atual", header: "Valor Atual (R$)" },
-  { accessorKey: "vl_mensal_resultante", header: "Valor Resultante (R$)" },
-  { accessorKey: "dt_interacao", header: "Data da proposta" },
+  {
+    accessorKey: "valorAtual",
+    header: "Valor Atual (R$)",
+    cell: ({ getValue }) => {
+      const valor = getValue<number>();
+
+      return (
+        <span>
+          R${" "}
+          {valor.toLocaleString("pt-BR", {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+          })}
+        </span>
+      );
+    },
+  },
+  {
+    accessorKey: "vlMensalResultante",
+    header: "Valor Resultante (R$)",
+    cell: ({ getValue }) => {
+      const valor = getValue<number>();
+
+      return (
+        <span>
+          R${" "}
+          {valor.toLocaleString("pt-BR", {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+          })}
+        </span>
+      );
+    },
+  },
+  {
+    accessorKey: "dtInteracao",
+    header: "Data da proposta",
+    cell: ({ getValue }) => {
+      const valor = getValue<string>();
+
+      return <span>{valor.replaceAll("-", "/")}</span>;
+    },
+  },
   {
     accessorKey: "observacao",
     header: "Observações",
@@ -84,7 +124,7 @@ const columns: ColumnDef<InteracaoType>[] = [
     },
   },
   {
-    accessorKey: "is_aceita",
+    accessorKey: "isAceita",
     header: "Proposta aceita?",
     cell: ({ getValue }) => {
       return getValue() ? (

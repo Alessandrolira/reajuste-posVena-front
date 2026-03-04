@@ -15,6 +15,7 @@ interface CardEmpresaProps {
 }
 
 export default function CardEmpresa({
+  id,
   nome,
   operadora,
   modalidade,
@@ -26,7 +27,7 @@ export default function CardEmpresa({
   porcentagemUltimoReajuste,
 }: CardEmpresaProps) {
   return (
-    <Link href={`/empresa/${nome}`}>
+    <Link href={`/empresa/${id}`}>
       <div className="bg-(--branco) border border-(--cor-borda) rounded-lg p-4 cursor-pointer hover:shadow-md transition-shadow border-l-4 border-l-(--verde-escuro)">
         <div className="flex justify-between items-center">
           <div className="flex gap-2 items-center">

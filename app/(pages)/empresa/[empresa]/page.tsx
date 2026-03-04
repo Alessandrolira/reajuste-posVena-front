@@ -10,14 +10,17 @@ import BalaoValor from "../../../components/BalaoValor";
 import Botao from "@/app/components/Botao";
 import Tabela from "@/app/components/Tabela";
 import { InteracaoType } from "@/app/types/TypeTabela";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import InputTexto from "../../../components/InputTexto";
 import BotaoCancelar from "../../../components/BotaoCancelar";
 import BotaoConfirmar from "../../../components/BotaoConfirmar";
 import ReajusteAberto from "../../../components/ReajusteAberto";
 import InputLista from "../../../components/InputLista";
+import { EmpresaType } from "@/app/types/EmpresaType";
+import { api } from "@/app/services/api";
 
 export default function Empresa() {
+  const params = useParams();
   const [toggleAdicionarReajuste, setToggleAdicionarReajuste] = useState(false);
   const [toggleDescricao, setToggleDescricao] = useState(false);
   const [toggleDescricaoInteracao, setToggleDescricaoInteracao] =
@@ -31,9 +34,31 @@ export default function Empresa() {
   const [toggleNovaNegociacao, setToggleNovaNegociacao] = useState(false);
   const [toggleNegociacaoAprovada, setToggleNegociacaoAprovada] =
     useState(false);
+  const [solicitante, setSolicitante] = useState("");
+
+  const [empresaEncontrada, setEmpresaEncontrada] = useState<EmpresaType>();
+  const idEmpresa = params.empresa;
+
+  useEffect(() => {
+    async function buscarEmpresa(id: number) {
+      try {
+        console.log(id);
+
+        const response = await api.get(`/empresas/${id}`);
+        setEmpresaEncontrada(response.data);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+
+    if (idEmpresa) {
+      buscarEmpresa(Number(idEmpresa));
+    }
+  }, []);
 
   function ToggleReajuste() {
     setToggleAdicionarReajuste(!toggleAdicionarReajuste);
+    console.log(empresaEncontrada);
   }
 
   function ToggleDescricaoReajuste() {
@@ -68,35 +93,7 @@ export default function Empresa() {
     console.log("Negociacao aprovada");
   }
 
-  const dados: InteracaoType[] = [
-    {
-      id: 1,
-      ano: "2024",
-      tipo: "OPERADORA",
-      porcentagem_proposta: 8.5,
-      valor_atual: 1200,
-      vl_mensal_resultante: 1296,
-      dt_interacao: "10/02/2026",
-      observacao: "Cliente solicitou revisão após reajuste anual.",
-      is_aceita: true,
-    },
-    {
-      id: 2,
-      ano: "2024",
-      tipo: "CORRETORA",
-      porcentagem_proposta: 8.5,
-      valor_atual: 1200,
-      vl_mensal_resultante: 1296,
-      dt_interacao: "10/02/2026",
-      observacao: "Cliente solicitou revisão após reajuste anual.",
-      is_aceita: true,
-    },
-  ];
-
-  const params = useParams();
-
-  const empresa = params.empresa as string;
-  const empresaFormatada = empresa.replace(/%20/g, " ").toUpperCase();
+  console.log(empresaEncontrada?.historicoInteracao);
 
   return (
     <div>
@@ -269,6 +266,8 @@ export default function Empresa() {
               <InputLista
                 label="Solicitante"
                 valores={["OPERADORA", "CORRETORA"]}
+                value={solicitante}
+                onChange={(e) => setSolicitante(e.target.value)}
               ></InputLista>
               <InputTexto
                 label="Proposta (%)"
@@ -334,7 +333,7 @@ export default function Empresa() {
         </div>
       )}
       <Cabecalho
-        nomeEmpresa={empresaFormatada}
+        nomeEmpresa={empresaEncontrada?.nomeEmpresa}
         onClickToggle={ToggleReajuste}
       ></Cabecalho>
       <div className="py-8.5 px-19.75 ">
@@ -442,7 +441,13 @@ export default function Empresa() {
               onClick={() => adicionarInteração()}
             ></Botao>
           </div>
-          <Tabela dadosRecebidos={dados}></Tabela>
+          {empresaEncontrada?.historicoInteracao == null ? (
+            <p>Nenhuma informação encontrada</p>
+          ) : (
+            <Tabela
+              dadosRecebidos={empresaEncontrada?.historicoInteracao}
+            ></Tabela>
+          )}
         </div>
       </div>
     </div>
