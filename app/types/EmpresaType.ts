@@ -11,6 +11,7 @@ export type EmpresaType = {
   economiaReal: number;
   valorUltimaFatura: number;
   valorFechado: number;
+  valorComPrimeiraPorcentagem: number;
   porcentagensIniciaisFinais: [
     { operadora: number; corretora: number; motivoEncerramento: string },
   ];

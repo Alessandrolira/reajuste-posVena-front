@@ -1,9 +1,10 @@
 interface CartaoValoresProps {
   titulo: string;
   valor: string;
-  valorBase: string;
+  valorBase?: string;
   porcentagem: string;
   corPredominante: string;
+  diferenca?: boolean;
 }
 
 export default function CartaoValores({
@@ -12,6 +13,7 @@ export default function CartaoValores({
   valorBase,
   porcentagem,
   corPredominante,
+  diferenca,
 }: CartaoValoresProps) {
   console.log(corPredominante);
 
@@ -25,9 +27,15 @@ export default function CartaoValores({
       >
         {valor}
       </p>
-      <p className="font-thin text-sm">
-        Base R$ {valorBase} + {porcentagem}
-      </p>
+      {diferenca ? (
+        <p className="font-thin text-sm">
+          Cálculo R$ {valorBase} - {porcentagem}
+        </p>
+      ) : (
+        <p className="font-thin text-sm">
+          Base R$ {valorBase} + {porcentagem}
+        </p>
+      )}
     </div>
   );
 }
