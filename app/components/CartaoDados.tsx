@@ -10,7 +10,7 @@ export default function CartaoDados({
   corDestaque,
 }: CartaoDadosProps) {
   return (
-    <div className="bg-(--branco) w-full rounded-lg border border-(--cor-borda) py-7.25 flex gap-3 items-center flex-col">
+    <div className="bg-[var(--branco)] w-full rounded-lg border border-[var(--cor-borda)] py-7.25 flex gap-3 items-center flex-col">
       <p>{titulo}</p>
       <p className={`text-2xl font-bold text-(--${corDestaque})`}>{valor}</p>
     </div>

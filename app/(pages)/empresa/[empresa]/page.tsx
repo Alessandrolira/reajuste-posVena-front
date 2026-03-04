@@ -9,7 +9,6 @@ import Grafico from "../../../components/Grafico";
 import BalaoValor from "../../../components/BalaoValor";
 import Botao from "@/app/components/Botao";
 import Tabela from "@/app/components/Tabela";
-import { InteracaoType } from "@/app/types/TypeTabela";
 import { useEffect, useState } from "react";
 import InputTexto from "../../../components/InputTexto";
 import BotaoCancelar from "../../../components/BotaoCancelar";
@@ -335,6 +334,9 @@ export default function Empresa() {
       <Cabecalho
         nomeEmpresa={empresaEncontrada?.nomeEmpresa}
         onClickToggle={ToggleReajuste}
+        statusReajuste={empresaEncontrada?.statusRenovacao.replace("_", " ")}
+        modalidade={empresaEncontrada?.modalidade}
+        operadora={empresaEncontrada?.operadora}
       ></Cabecalho>
       <div className="py-8.5 px-19.75 ">
         <ReajusteAberto

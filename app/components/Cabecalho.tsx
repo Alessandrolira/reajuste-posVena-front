@@ -9,6 +9,9 @@ interface CabecalhoProps {
   nomeEmpresa?: string;
   eh_analista?: boolean;
   onClickAdicionarAnalista?: () => void;
+  statusReajuste?: string;
+  operadora?: string;
+  modalidade?: string;
 }
 
 export default function Cabecalho({
@@ -17,6 +20,9 @@ export default function Cabecalho({
   nomeEmpresa,
   eh_analista,
   onClickAdicionarAnalista,
+  statusReajuste,
+  operadora,
+  modalidade,
 }: CabecalhoProps) {
   return (
     <div className="bg-(--branco) py-8.5 px-19.75 flex justify-between items-center">
@@ -62,13 +68,26 @@ export default function Cabecalho({
 
               <div className="flex items-center gap-8">
                 <p className="font-bold text-[25px]">{nomeEmpresa}</p>
-                <p className="bg-(--laranja) text-(--branco) py-1 px-2 rounded-md text-[12px]">
-                  Em aberto
+                <p
+                  className={`bg-(--laranja) text-(--branco) py-1 px-2 rounded-md text-[12px] 
+                    ${
+                      statusReajuste == "EM NEGOCIACAO"
+                        ? "bg-[var(--azul-claro)]"
+                        : statusReajuste == "PENDENTE"
+                          ? "bg-[var(--laranja)]"
+                          : statusReajuste == "REAJUSTADO"
+                            ? "bg-[var(--verde-escuro)]"
+                            : statusReajuste == "EM_ATRASO"
+                              ? "bg-[var(--vermelho)]"
+                              : "bg-[var(--cor-borda)]"
+                    }`}
+                >
+                  {statusReajuste}
                 </p>
               </div>
               <div className="flex gap-8 font-thin text-[12px] mt-1">
-                <p>Amil</p>
-                <p className="text-(--laranja) font-thin">Dental</p>
+                <p>{operadora}</p>
+                <p className="text-(--laranja) font-thin">{modalidade}</p>
               </div>
             </div>
           </div>

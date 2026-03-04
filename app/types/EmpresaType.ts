@@ -3,6 +3,8 @@ import { InteracaoType } from "./TypeTabela";
 export type EmpresaType = {
   nomeEmpresa: string;
   statusRenovacao: string;
+  modalidade: string;
+  operadora: string;
   ultimoReajusteOferecido: number;
   ultimoReajusteFechado: number;
   economiaPercentual: number;

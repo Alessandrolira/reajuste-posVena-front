@@ -17,10 +17,12 @@ export default function CartaoValores({
 
   return (
     <div
-      className={`bg-(--${corPredominante}-claro) w-full text-center items-center justify-center rounded-lg border border-(--cor-borda) py-5.25`}
+      className={`bg-[var(--${corPredominante}-claro)] w-full text-center items-center justify-center rounded-lg border border-(--cor-borda) py-5.25`}
     >
-      <p className="font-bold text-xl">{titulo}</p>
-      <p className={`font-bold text-2xl text-(--${corPredominante})`}>
+      <p className={`font-bold text-xl `}>{titulo}</p>
+      <p
+        className={`font-bold text-2xl ${corPredominante == "vermelho" ? "text-[var(--vermelho)]" : "text-[var(--${corPredominante}-escuro)]"}`}
+      >
         {valor}
       </p>
       <p className="font-thin text-sm">
