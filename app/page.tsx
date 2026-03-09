@@ -16,6 +16,7 @@ import { MelhorNegociacaoType } from "./types/MelhorNegociacaoType";
 import { EmpresaType } from "./types/EmpresaType";
 import { CardsEmpresaType } from "./types/CardsEmpresaType";
 import { formatarDataBrasil } from "./utils/formatarData";
+import { formatarMoeda } from "./utils/formatarMoeda";
 
 export default function Home() {
   const [toggleAdicionarEmpresa, setToggleAdicionarEmpresa] = useState(false);
@@ -378,8 +379,10 @@ export default function Home() {
                 ultimoReajuste={Number(
                   empresa.ultimoReajuste?.anoUltimoReajuste,
                 )}
-                economiaTotal={`R$ ${Number(empresa.ultimoReajuste?.economiaPercentual)}`}
-                porcentagemUltimoReajuste={16}
+                economiaTotal={`${formatarMoeda(Number(empresa.ultimoReajuste?.valorComPorcentagemFechada))}`}
+                porcentagemUltimoReajuste={
+                  empresa.ultimoReajuste?.porcentagemFechada
+                }
                 statusUltimoReajuste={String(
                   empresa.ultimoReajuste?.statusNegociacao,
                 )}
