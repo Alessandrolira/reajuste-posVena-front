@@ -1,30 +1,10 @@
-import { InteracaoType } from "./TypeTabela";
-
 export type EmpresaType = {
+  idEmpresa: number;
   nomeEmpresa: string;
   statusRenovacao: string;
-  modalidade: string;
+  dtAniversario: string;
   operadora: string;
-  ultimoReajusteOferecido: number;
-  ultimoReajusteFechado: number;
-  economiaPercentual: number;
-  economiaReal: number;
-  valorUltimaFatura: number;
-  valorFechado: number;
-  valorComPrimeiraPorcentagem: number;
-  mediaDeReducao: number;
-  porcentagensFinaisIniciais: [
-    {
-      operadora: number;
-      corretora: number;
-      motivoEncerramento: string;
-      ano: number;
-    },
-  ];
-  linhaTempo: [
-    { ano: number; porcentagemFechada: number; economiaPorcentagem: number },
-  ];
-  historicoInteracao: InteracaoType[];
+  modalidade: string;
 };
 
 export interface TypeTabela {

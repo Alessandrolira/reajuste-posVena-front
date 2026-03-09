@@ -9,6 +9,7 @@ interface CardEmpresaProps {
   status: string;
   aniversario: string;
   ultimoReajuste?: number;
+  statusUltimoReajuste: string;
   economiaTotal?: string;
   statusAnterior?: string;
   porcentagemUltimoReajuste?: number;
@@ -25,7 +26,15 @@ export default function CardEmpresa({
   economiaTotal,
   statusAnterior,
   porcentagemUltimoReajuste,
+  statusUltimoReajuste,
 }: CardEmpresaProps) {
+  const statusStyle = {
+    REAJUSTADO: "bg-(--verde-escuro)",
+    PENDENTE: "bg-(--laranja)",
+    "EM ATRASO": "bg-(--vermelho)",
+    "EM NEGOCIACAO": "bg-(--azul-claro)",
+  };
+
   return (
     <Link href={`/empresa/${id}`}>
       <div className="bg-(--branco) border border-(--cor-borda) rounded-lg p-4 cursor-pointer hover:shadow-md transition-shadow border-l-4 border-l-(--verde-escuro)">
@@ -62,14 +71,15 @@ export default function CardEmpresa({
         </div>
         <div className="flex justify-between items-center text-[0.8em] border-b border-(--cor-borda) pb-4 mb-4">
           <p
-            className={`${status === "REAJUSTADO" ? "bg-(--verde-escuro)" : status === "PENDENTE" ? "bg-(--laranja)" : status == "EM ATRASO" ? "bg-(--vermelho)" : status == "EM NEGOCIACAO" ? "bg-(--azul-claro)" : "bg-(--cor-borda)"} w-max px-3 rounded-full text-(--branco) text-bold font-light`}
+            className={`${statusStyle[status as keyof typeof statusStyle] || "bg-(--cor-borda)"}
+            w-max px-3 rounded-full text-(--branco) text-bold font-light`}
           >
             {status}
           </p>
           <p>Aniversário: {aniversario}</p>
         </div>
         <div className="flex justify-between">
-          {ultimoReajuste ? (
+          {ultimoReajuste && statusUltimoReajuste == "FINALIZADA" ? (
             <div className="flex justify-between w-full h-12">
               <div>
                 <p>Ultimo Reajuste</p>

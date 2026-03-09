@@ -18,6 +18,8 @@ import InputLista from "../../../components/InputLista";
 import { EmpresaType } from "@/app/types/EmpresaType";
 import { api } from "@/app/services/api";
 import { formatarMoeda } from "@/app/utils/formatarMoeda";
+import { formatarData } from "@/app/utils/date";
+// import { InteracaoType } from "@/app/types/TypeTabela";
 
 export default function Empresa() {
   const params = useParams();
@@ -37,13 +39,23 @@ export default function Empresa() {
   const [solicitante, setSolicitante] = useState("");
 
   const [empresaEncontrada, setEmpresaEncontrada] = useState<EmpresaType>();
+
+  const [render, setRender] = useState(false);
+  const [anoReajuste, setAnoReajuste] = useState(new Date().getFullYear());
+  const [porcentagemOferecida, setPorcentagemOferecida] = useState(0);
+  const [dtEnvioProposta, setDtEnvioProposta] = useState(Date.now);
+  const [vlUltimaFatura, setVlUltimaFatura] = useState(0);
+
+  const [porcentagemProposta, setPorcentagemProposta] = useState(0);
+  const [dtProposta, setDtProposta] = useState("");
+  const [observacaoInteracaoAdicionada, setObservacaoInteracaoAdicionada] =
+    useState("");
+
   const idEmpresa = params.empresa;
 
   useEffect(() => {
     async function buscarEmpresa(id: number) {
       try {
-        console.log(id);
-
         const response = await api.get(`/empresas/${id}`);
         setEmpresaEncontrada(response.data);
       } catch (error) {
@@ -54,7 +66,7 @@ export default function Empresa() {
     if (idEmpresa) {
       buscarEmpresa(Number(idEmpresa));
     }
-  }, []);
+  }, [idEmpresa, render]);
 
   function ToggleReajuste() {
     setToggleAdicionarReajuste(!toggleAdicionarReajuste);
@@ -81,19 +93,46 @@ export default function Empresa() {
     console.log("sim");
   }
 
-  function adicionarReajuste() {
-    console.log("Adicionando reajuste");
+  async function adicionarReajuste() {
+    try {
+      const response = await api.post("/reajuste", {
+        idEmpresa: idEmpresa,
+        anoReferencia: anoReajuste,
+        dataEnvioProposta: formatarData(String(dtEnvioProposta)),
+        porcentagemOperadora: porcentagemOferecida,
+        valorUltimaFatura: vlUltimaFatura,
+      });
+
+      setRender(render);
+      console.log("reajuste cadastrado ", response.data);
+    } catch (error) {
+      console.log(error);
+    }
   }
 
-  function adicionarNovaNegociacao() {
-    console.log("teste");
+  async function adicionarNovaNegociacao() {
+    try {
+      const response = await api.post("/interacao", {
+        idReajuste: empresaEncontrada?.idReajuste,
+        solicitante: solicitante,
+        proposta: porcentagemProposta,
+        dataProposta: formatarData(dtProposta),
+        observacoes: observacaoInteracaoAdicionada,
+      });
+
+      setRender(!render);
+      setToggleNovaNegociacao(false);
+      console.log("interação criada com sucesso", response.data);
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   function adicionarNegociacaoAprovada() {
     console.log("Negociacao aprovada");
   }
 
-  console.log(empresaEncontrada?.historicoInteracao);
+  console.log(empresaEncontrada?.statusNegociacao);
 
   return (
     <div>
@@ -107,24 +146,34 @@ export default function Empresa() {
                 name="anoReajuste"
                 placeholder="2024 (ano atual)"
                 tipoData="text"
+                valor={String(anoReajuste)}
+                onChange={(e) => setAnoReajuste(Number(e.target.value))}
               ></InputTexto>
               <InputTexto
                 label="% Oferecida pela operadora"
                 name="porcentagemOferecida"
                 placeholder="Ex: 16,5"
                 tipoData="text"
+                valor={String(porcentagemOferecida)}
+                onChange={(e) =>
+                  setPorcentagemOferecida(Number(e.target.value))
+                }
               ></InputTexto>
               <InputTexto
                 label="Data do envio da proposta"
                 placeholder="Ex: 01/01/2024"
                 name="dataEnvio"
                 tipoData="data"
+                valor={String(dtEnvioProposta)}
+                onChange={(e) => setDtEnvioProposta(Number(e.target.value))}
               ></InputTexto>
               <InputTexto
                 label="Valor atual da fatura do cliente (R$)"
                 name="valorFatura"
                 placeholder="Ex: R$ 27.840,00"
                 tipoData="text"
+                valor={String(vlUltimaFatura)}
+                onChange={(e) => setVlUltimaFatura(Number(e.target.value))}
               ></InputTexto>
               <div className="flex justify-end gap-3">
                 <BotaoCancelar
@@ -274,12 +323,16 @@ export default function Empresa() {
                 placeholder="Ex: 12,5%"
                 name="porcentagem_proposta"
                 tipoData="text"
+                valor={String(porcentagemProposta)}
+                onChange={(e) => setPorcentagemProposta(Number(e.target.value))}
               ></InputTexto>
               <InputTexto
                 label="Data da proposta"
                 placeholder="Ex: 01/02/2023"
                 name="data_proposta"
                 tipoData="data"
+                valor={String(dtProposta)}
+                onChange={(e) => setDtProposta(e.target.value)}
               ></InputTexto>
               <div>
                 <p>Observações</p>
@@ -287,6 +340,10 @@ export default function Empresa() {
                   name="observacaoInteracao"
                   id="observacaoInteracao"
                   className="border border-(--cor-borda) rounded-lg h-60 px-4 py-4 w-full"
+                  value={observacaoInteracaoAdicionada}
+                  onChange={(e) =>
+                    setObservacaoInteracaoAdicionada(e.target.value)
+                  }
                 ></textarea>
               </div>
               <div className="flex gap-2 justify-end">
@@ -340,28 +397,35 @@ export default function Empresa() {
         operadora={empresaEncontrada?.operadora}
       ></Cabecalho>
       <div className="py-8.5 px-19.75 ">
-        <ReajusteAberto
-          interacoes={["asdasd"]}
-          onClickDescricao={ToggleDescricaoReajuste}
-          onClickDescricaoInteracao={ToggleDescricaoInteracao}
-          onClickNovaNegociacao={ToggleNovaNegociacao}
-          onClickNegociacaoAprovada={ToggleNegociacaoAprovada}
-          ultimaInteracaoAceita={true}
-        ></ReajusteAberto>
+        {(empresaEncontrada?.statusNegociacao == "EM_ANDAMENTO" ||
+          empresaEncontrada?.statusNegociacao == "INTERACAO_ACEITA") && (
+          <ReajusteAberto
+            interacoes={empresaEncontrada?.historicoInteracao}
+            statusNegociacao={empresaEncontrada.statusNegociacao}
+            onClickDescricao={ToggleDescricaoReajuste}
+            onClickDescricaoInteracao={ToggleDescricaoInteracao}
+            onClickNovaNegociacao={ToggleNovaNegociacao}
+            onClickAbrirNegociacao={ToggleNovaNegociacao}
+            onClickNegociacaoAprovada={ToggleNegociacaoAprovada}
+          />
+        )}
+
         {empresaEncontrada?.ultimoReajusteOferecido == 0 ? (
           <div>
-            <p className="text-[var(--cor-borda)] italic">
+            <p className="text-(--cor-borda) italic">
               Essa empresa não possui reajustes anteriores cadastrados
             </p>
           </div>
         ) : (
           <div>
-            <p className="text-2xl mb-8.5">Ultimo Reajuste (2025)</p>
+            <p className="text-2xl mb-8.5">
+              Ultimo Reajuste ({empresaEncontrada?.anoUltimoReajuste})
+            </p>
             <div className="flex gap-8 mb-8.5">
               <CartaoDados
                 titulo="Reajuste Oferecido"
                 valor={`${empresaEncontrada?.ultimoReajusteOferecido}%`}
-                corDestaque="vermelho"
+                corDestaque="red"
               ></CartaoDados>
               <CartaoDados
                 titulo="Reajuste Negociado"
@@ -392,7 +456,7 @@ export default function Empresa() {
                 valor={`${formatarMoeda(empresaEncontrada?.valorFechado)}`}
                 valorBase={`${formatarMoeda(empresaEncontrada?.valorUltimaFatura)}`}
                 porcentagem={`${empresaEncontrada?.ultimoReajusteFechado}%`}
-                corPredominante="verde"
+                corPredominante="verde-escuro"
               ></CartaoValores>
               <CartaoValores
                 titulo="ECONOMIA GERADA"
@@ -440,24 +504,16 @@ export default function Empresa() {
             <div className="bg-(--branco) pt-10 px-10 rounded-lg border border-(--cor-borda) mb-8.5">
               <p className="text-2xl font-thin">LINHA DO TEMPO</p>
               <div className="py-10 p-20 flex items-center gap-10">
-                <BalaoValor
-                  ano="2023"
-                  valorOferecido="17,5%"
-                  valorNegociado="10,5%"
-                ></BalaoValor>
-                <div className="h-1 w-20 top-[-30] relative bg-(--cor-borda)"></div>
-                <BalaoValor
-                  ano="2024"
-                  valorOferecido="18,0%"
-                  valorNegociado="11,0%"
-                ></BalaoValor>
-                <div className="h-1 w-20 top-[-30] relative bg-(--cor-borda)"></div>
-                <BalaoValor
-                  ano="2025"
-                  valorOferecido="17,5%"
-                  valorNegociado="10,5%"
-                ></BalaoValor>
-                <div className="h-1 w-20 top-[-30] relative bg-(--cor-borda)"></div>
+                {empresaEncontrada?.linhaTempo.map((valorBalao, index) => (
+                  <div className="flex items-center gap-5" key={index}>
+                    <BalaoValor
+                      ano={valorBalao.ano}
+                      valorOferecido={`${valorBalao.porcentagemFechada}%`}
+                      valorNegociado={`${valorBalao.economiaPorcentagem}%`}
+                    ></BalaoValor>
+                    <div className="h-1 w-20 top-[-30] relative bg-(--cor-borda)"></div>
+                  </div>
+                ))}
               </div>
             </div>
             <div className="bg-(--branco) pt-10 px-10 rounded-lg border border-(--cor-borda) mb-8.5">

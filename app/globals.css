@@ -13,12 +13,13 @@
   --preto: #000;
   --cor-borda: #c0c0c0;
   --cinza: #d9d9d9;
-  --vermelho: #ff1900;
-  --vermelho-claro: #ffcdcd;
+  --vermelho: #da1802;
+  --vemelho-claro: #ffcdcd;
   --amarelo-reajuste: #fff7f0;
 }
 
 body {
   background: var(--background);
   font-family: var(--font-lexend), sans-serif;
+  color: var(--preto);
 }

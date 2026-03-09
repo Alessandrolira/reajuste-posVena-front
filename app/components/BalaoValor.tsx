@@ -1,7 +1,7 @@
 import Image from "next/image";
 
 interface BalaoValorProps {
-  ano: string;
+  ano: number;
   valorOferecido: string;
   valorNegociado: string;
 }

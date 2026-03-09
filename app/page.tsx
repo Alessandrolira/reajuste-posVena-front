@@ -13,7 +13,9 @@ import { api } from "./services/api";
 import { AnalistaType } from "./types/AnalistaType";
 import { formatarData } from "./utils/date";
 import { MelhorNegociacaoType } from "./types/MelhorNegociacaoType";
-import { CardsEmpresasType } from "./types/CardsEmpresas";
+import { EmpresaType } from "./types/EmpresaType";
+import { CardsEmpresaType } from "./types/CardsEmpresaType";
+import { formatarDataBrasil } from "./utils/formatarData";
 
 export default function Home() {
   const [toggleAdicionarEmpresa, setToggleAdicionarEmpresa] = useState(false);
@@ -24,7 +26,7 @@ export default function Home() {
   const [mediaReducao, setMediaReducao] = useState(0);
   const [melhorNegociacao, setMelhorNegociacao] =
     useState<MelhorNegociacaoType>();
-  const [cardsEmpresa, setCardsEmpresa] = useState<CardsEmpresasType[]>([]);
+  const [cardEmpresa, setCardsEmpresa] = useState<CardsEmpresaType[]>([]);
 
   const [nomeEmpresa, setNomeEmpresa] = useState("");
   const [idAnalista, setIdAnalista] = useState(0);
@@ -97,16 +99,38 @@ export default function Home() {
 
     buscarMelhorReajuste();
 
-    async function buscarCardsEmpresa() {
+    async function buscarCardEmpresa() {
       try {
-        const response = await api.get("/empresas/buscarCardsEmpresa");
-        setCardsEmpresa(response.data);
+        const empresas = await api.get("/empresas");
+        setCardsEmpresa([]);
+
+        empresas.data.map(async (empresa: EmpresaType) => {
+          let ultimoReajuste = null;
+
+          try {
+            const res = await api.get(
+              `/reajuste/ultimoReajuste/${empresa.idEmpresa}`,
+            );
+            ultimoReajuste = res.data;
+            console.log("ULTIMO REAJUSTE", empresa.idEmpresa, res.data);
+          } catch {
+            ultimoReajuste = null;
+          }
+
+          setCardsEmpresa((prev: CardsEmpresaType[]) => [
+            ...prev,
+            {
+              empresa: empresa,
+              ultimoReajuste: ultimoReajuste,
+            },
+          ]);
+        });
       } catch (error) {
         console.error(error);
       }
     }
 
-    buscarCardsEmpresa();
+    buscarCardEmpresa();
   }, [render]);
 
   async function AdicionarEmpresa(e: React.FormEvent<HTMLFormElement>) {
@@ -139,31 +163,37 @@ export default function Home() {
       console.log(error);
     }
   }
-  const empresasFiltradas = cardsEmpresa
+
+  const empresasFiltradas = cardEmpresa
     .filter((empresa) => {
       const termoBusca = busca.toLowerCase();
 
-      const correspondeNome = empresa.nomeEmpresa
-        .toLowerCase()
-        .includes(termoBusca);
+      let correspondeNome = true;
+      if (empresa.empresa.nomeEmpresa !== undefined) {
+        correspondeNome = empresa.empresa.nomeEmpresa
+          .toLowerCase()
+          .includes(termoBusca);
+      } else {
+        correspondeNome = false;
+      }
 
       const correspondeStatus =
-        !statusFiltro || empresa.statusRenovacao === statusFiltro;
+        !statusFiltro || empresa.empresa.statusRenovacao === statusFiltro;
 
       return correspondeNome && correspondeStatus;
     })
     .sort((a, b) => {
       // Coloca EM_ATRASO no topo
       if (
-        a.statusRenovacao === "EM_ATRASO" &&
-        b.statusRenovacao !== "EM_ATRASO"
+        a.empresa.statusRenovacao === "EM_ATRASO" &&
+        b.empresa.statusRenovacao !== "EM_ATRASO"
       ) {
         return -1;
       }
 
       if (
-        a.statusRenovacao !== "EM_ATRASO" &&
-        b.statusRenovacao === "EM_ATRASO"
+        a.empresa.statusRenovacao !== "EM_ATRASO" &&
+        b.empresa.statusRenovacao === "EM_ATRASO"
       ) {
         return 1;
       }
@@ -333,24 +363,26 @@ export default function Home() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {empresasFiltradas.map((cardEmpresa) => {
-            console.log(cardEmpresa.modalidade);
-
+          {empresasFiltradas.map((empresa) => {
             return (
               <CardEmpresa
-                key={cardEmpresa.idEmpresa}
-                id={cardEmpresa.idEmpresa}
-                nome={cardEmpresa.nomeEmpresa}
-                operadora={cardEmpresa.operadora}
-                modalidade={cardEmpresa.modalidade}
-                status={cardEmpresa.statusRenovacao.replace("_", " ")}
-                aniversario={formatarData(cardEmpresa.aniversario).replaceAll(
-                  "-",
-                  "/",
+                key={empresa.empresa.idEmpresa}
+                id={empresa.empresa.idEmpresa}
+                nome={empresa.empresa.nomeEmpresa}
+                operadora={empresa.empresa.operadora}
+                modalidade={empresa.empresa.modalidade}
+                status={empresa.empresa.statusRenovacao.replace("_", " ")}
+                aniversario={formatarDataBrasil(
+                  empresa.empresa.dtAniversario,
+                ).replaceAll("-", "/")}
+                ultimoReajuste={Number(
+                  empresa.ultimoReajuste?.anoUltimoReajuste,
                 )}
-                ultimoReajuste={cardEmpresa.ultimoReajuste}
-                economiaTotal={`R$ ${cardEmpresa.economiaTotal}`}
+                economiaTotal={`R$ ${Number(empresa.ultimoReajuste?.economiaPercentual)}`}
                 porcentagemUltimoReajuste={16}
+                statusUltimoReajuste={String(
+                  empresa.ultimoReajuste?.statusNegociacao,
+                )}
               ></CardEmpresa>
             );
           })}
