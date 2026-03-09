@@ -123,6 +123,7 @@ export default function Home() {
             {
               empresa: empresa,
               ultimoReajuste: ultimoReajuste,
+              historicoInteracoes: null,
             },
           ]);
         });
@@ -291,7 +292,7 @@ export default function Home() {
           <Cartao
             icon="progressao"
             corBg="verde-claro"
-            valor={`R$ ${economiaTotal.toFixed(2).replace(".", ",")}`}
+            valor={`${formatarMoeda(Number(economiaTotal))}`}
           ></Cartao>
           <Cartao
             icon="contrato"

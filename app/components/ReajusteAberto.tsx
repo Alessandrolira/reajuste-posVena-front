@@ -53,8 +53,6 @@ export default function ReajusteAberto({
     return false;
   }
 
-  console.log(ahNegociacaoAceita(interacoes));
-
   return (
     <div className="mb-8.5 bg-[rgb(253,241,230)] rounded-lg py-4.5 px-3.25 flex gap-2.25">
       <div className="basis-2/3 border-r border-(--cor-borda) pr-2.25 flex flex-col">

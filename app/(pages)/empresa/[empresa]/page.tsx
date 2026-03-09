@@ -19,6 +19,7 @@ import { EmpresaType } from "@/app/types/EmpresaType";
 import { api } from "@/app/services/api";
 import { formatarMoeda } from "@/app/utils/formatarMoeda";
 import { formatarData } from "@/app/utils/date";
+import { CardsEmpresaType } from "@/app/types/CardsEmpresaType";
 // import { InteracaoType } from "@/app/types/TypeTabela";
 
 export default function Empresa() {
@@ -38,7 +39,8 @@ export default function Empresa() {
     useState(false);
   const [solicitante, setSolicitante] = useState("");
 
-  const [empresaEncontrada, setEmpresaEncontrada] = useState<EmpresaType>();
+  const [empresaEncontrada, setEmpresaEncontrada] =
+    useState<CardsEmpresaType>();
 
   const [render, setRender] = useState(false);
   const [anoReajuste, setAnoReajuste] = useState(new Date().getFullYear());
@@ -54,23 +56,41 @@ export default function Empresa() {
   const idEmpresa = params.empresa;
 
   useEffect(() => {
-    async function buscarEmpresa(id: number) {
+    async function buscarCardEmpresa() {
       try {
-        const response = await api.get(`/empresas/${id}`);
-        setEmpresaEncontrada(response.data);
+        const empresas = await api.get("/empresas");
+
+        empresas.data.map(async (empresa: EmpresaType) => {
+          let ultimoReajuste = null;
+          let historicoInteracoes = null;
+
+          try {
+            const res = await api.get(
+              `/reajuste/ultimoReajuste/${empresa.idEmpresa}`,
+            );
+            ultimoReajuste = res.data;
+            historicoInteracoes = res.data.historicoInteracoes;
+            console.log("ULTIMO REAJUSTE", empresa.idEmpresa, res.data);
+          } catch {
+            ultimoReajuste = null;
+          }
+
+          setEmpresaEncontrada({
+            empresa: empresa,
+            ultimoReajuste: ultimoReajuste,
+            historicoInteracoes: historicoInteracoes,
+          });
+        });
       } catch (error) {
         console.error(error);
       }
     }
 
-    if (idEmpresa) {
-      buscarEmpresa(Number(idEmpresa));
-    }
+    buscarCardEmpresa();
   }, [idEmpresa, render]);
 
   function ToggleReajuste() {
     setToggleAdicionarReajuste(!toggleAdicionarReajuste);
-    console.log(empresaEncontrada);
   }
 
   function ToggleDescricaoReajuste() {
@@ -113,7 +133,7 @@ export default function Empresa() {
   async function adicionarNovaNegociacao() {
     try {
       const response = await api.post("/interacao", {
-        idReajuste: empresaEncontrada?.idReajuste,
+        idReajuste: empresaEncontrada?.ultimoReajuste?.idReajuste,
         solicitante: solicitante,
         proposta: porcentagemProposta,
         dataProposta: formatarData(dtProposta),
@@ -132,7 +152,10 @@ export default function Empresa() {
     console.log("Negociacao aprovada");
   }
 
-  console.log(empresaEncontrada?.statusNegociacao);
+  console.log(empresaEncontrada?.empresa.statusRenovacao);
+
+  const porcentagens =
+    empresaEncontrada?.ultimoReajuste?.porcentagensFinaisIniciais ?? [];
 
   return (
     <div>
@@ -390,18 +413,21 @@ export default function Empresa() {
         </div>
       )}
       <Cabecalho
-        nomeEmpresa={empresaEncontrada?.nomeEmpresa}
+        nomeEmpresa={empresaEncontrada?.empresa.nomeEmpresa}
         onClickToggle={ToggleReajuste}
-        statusReajuste={empresaEncontrada?.statusRenovacao.replace("_", " ")}
-        modalidade={empresaEncontrada?.modalidade}
-        operadora={empresaEncontrada?.operadora}
+        statusReajuste={empresaEncontrada?.empresa.statusRenovacao.replace(
+          "_",
+          " ",
+        )}
+        modalidade={empresaEncontrada?.empresa.modalidade}
+        operadora={empresaEncontrada?.empresa.operadora}
       ></Cabecalho>
       <div className="py-8.5 px-19.75 ">
-        {(empresaEncontrada?.statusNegociacao == "EM_ANDAMENTO" ||
-          empresaEncontrada?.statusNegociacao == "INTERACAO_ACEITA") && (
+        {(empresaEncontrada?.empresa.statusRenovacao == "EM_ANDAMENTO" ||
+          empresaEncontrada?.empresa.statusRenovacao == "INTERACAO_ACEITA") && (
           <ReajusteAberto
-            interacoes={empresaEncontrada?.historicoInteracao}
-            statusNegociacao={empresaEncontrada.statusNegociacao}
+            interacoes={empresaEncontrada?.historicoInteracoes ?? []}
+            statusNegociacao={empresaEncontrada.empresa.statusRenovacao}
             onClickDescricao={ToggleDescricaoReajuste}
             onClickDescricaoInteracao={ToggleDescricaoInteracao}
             onClickNovaNegociacao={ToggleNovaNegociacao}
@@ -410,7 +436,7 @@ export default function Empresa() {
           />
         )}
 
-        {empresaEncontrada?.ultimoReajusteOferecido == 0 ? (
+        {empresaEncontrada?.ultimoReajuste?.porcentagemOferecida == 0 ? (
           <div>
             <p className="text-(--cor-borda) italic">
               Essa empresa não possui reajustes anteriores cadastrados
@@ -419,50 +445,51 @@ export default function Empresa() {
         ) : (
           <div>
             <p className="text-2xl mb-8.5">
-              Ultimo Reajuste ({empresaEncontrada?.anoUltimoReajuste})
+              Ultimo Reajuste (
+              {empresaEncontrada?.ultimoReajuste?.anoUltimoReajuste})
             </p>
             <div className="flex gap-8 mb-8.5">
               <CartaoDados
                 titulo="Reajuste Oferecido"
-                valor={`${empresaEncontrada?.ultimoReajusteOferecido}%`}
+                valor={`${empresaEncontrada?.ultimoReajuste?.porcentagemOferecida}%`}
                 corDestaque="red"
               ></CartaoDados>
               <CartaoDados
                 titulo="Reajuste Negociado"
-                valor={`${empresaEncontrada?.ultimoReajusteFechado}%`}
+                valor={`${empresaEncontrada?.ultimoReajuste?.porcentagemFechada}%`}
                 corDestaque="verde-escuro"
               ></CartaoDados>
               <CartaoDados
                 titulo="Economia Percentual"
-                valor={`${empresaEncontrada?.economiaPercentual}%`}
+                valor={`${empresaEncontrada?.ultimoReajuste?.economiaPercentual}%`}
                 corDestaque="verde-escuro"
               ></CartaoDados>
               <CartaoDados
                 titulo="Economia Estimada"
-                valor={`${formatarMoeda(empresaEncontrada?.economiaReal)}`}
+                valor={`${formatarMoeda(empresaEncontrada?.ultimoReajuste?.economiaReal)}`}
                 corDestaque="verde-escuro"
               ></CartaoDados>
             </div>
             <div className="flex gap-8">
               <CartaoValores
                 titulo="FATURA PROPOSTA OPERADORA"
-                valor={`${formatarMoeda(empresaEncontrada?.valorComPrimeiraPorcentagem)}`}
-                valorBase={`${formatarMoeda(empresaEncontrada?.valorUltimaFatura)}`}
-                porcentagem={`${empresaEncontrada?.ultimoReajusteOferecido}%`}
+                valor={`${formatarMoeda(empresaEncontrada?.ultimoReajuste?.valorComPrimeiraPorcentagem)}`}
+                valorBase={`${formatarMoeda(empresaEncontrada?.ultimoReajuste?.valorPrimeiraFatura)}`}
+                porcentagem={`${empresaEncontrada?.ultimoReajuste?.porcentagemOferecida}%`}
                 corPredominante="vermelho"
               ></CartaoValores>
               <CartaoValores
                 titulo="FATURA FINAL NEGOCIADA"
-                valor={`${formatarMoeda(empresaEncontrada?.valorFechado)}`}
-                valorBase={`${formatarMoeda(empresaEncontrada?.valorUltimaFatura)}`}
-                porcentagem={`${empresaEncontrada?.ultimoReajusteFechado}%`}
+                valor={`${formatarMoeda(empresaEncontrada?.ultimoReajuste?.valorComPorcentagemFechada)}`}
+                valorBase={`${formatarMoeda(empresaEncontrada?.ultimoReajuste?.valorPrimeiraFatura)}`}
+                porcentagem={`${empresaEncontrada?.ultimoReajuste?.porcentagemFechada}%`}
                 corPredominante="verde-escuro"
               ></CartaoValores>
               <CartaoValores
                 titulo="ECONOMIA GERADA"
-                valor={`${formatarMoeda(empresaEncontrada?.economiaReal)}`}
-                valorBase={`${formatarMoeda(empresaEncontrada?.valorComPrimeiraPorcentagem)}`}
-                porcentagem={`${formatarMoeda(empresaEncontrada?.valorFechado)}`}
+                valor={`${formatarMoeda(empresaEncontrada?.ultimoReajuste?.economiaReal)}`}
+                valorBase={`${formatarMoeda(empresaEncontrada?.ultimoReajuste?.valorComPrimeiraPorcentagem)}`}
+                porcentagem={`${formatarMoeda(empresaEncontrada?.ultimoReajuste?.valorComPorcentagemFechada)}`}
                 corPredominante="verde"
                 diferenca
               ></CartaoValores>
@@ -476,7 +503,7 @@ export default function Empresa() {
               ></Image>
               <p className="text-(--laranja)">
                 Negociação de Alta Performance - média de{" "}
-                {empresaEncontrada?.mediaDeReducao.toFixed(2)}% de redução
+                {empresaEncontrada?.ultimoReajuste?.mediaReducao}% de redução
               </p>
             </div>
             <div className="bg-(--branco) p-10 rounded-lg border border-(--cor-borda) mb-8.5">
@@ -484,32 +511,20 @@ export default function Empresa() {
                 OFERECIDO VS NEGOCIADO POR ANO
               </p>
               <Grafico
-                valoresX={
-                  empresaEncontrada?.porcentagensFinaisIniciais.map(
-                    (porcentagem) => String(porcentagem.ano),
-                  ) ?? []
-                }
-                valoresOperadora={
-                  empresaEncontrada?.porcentagensFinaisIniciais.map(
-                    (porcentagem) => porcentagem.operadora,
-                  ) ?? []
-                }
-                valoresCorretora={
-                  empresaEncontrada?.porcentagensFinaisIniciais.map(
-                    (porcentagem) => porcentagem.corretora,
-                  ) ?? []
-                }
+                valoresX={porcentagens.map((p) => String(p.ano))}
+                valoresOperadora={porcentagens.map((p) => p.operadora)}
+                valoresCorretora={porcentagens.map((p) => p.corretora)}
               />
             </div>
             <div className="bg-(--branco) pt-10 px-10 rounded-lg border border-(--cor-borda) mb-8.5">
               <p className="text-2xl font-thin">LINHA DO TEMPO</p>
               <div className="py-10 p-20 flex items-center gap-10">
-                {empresaEncontrada?.linhaTempo.map((valorBalao, index) => (
+                {porcentagens.map((valorBalao, index) => (
                   <div className="flex items-center gap-5" key={index}>
                     <BalaoValor
                       ano={valorBalao.ano}
-                      valorOferecido={`${valorBalao.porcentagemFechada}%`}
-                      valorNegociado={`${valorBalao.economiaPorcentagem}%`}
+                      valorOferecido={`${valorBalao.operadora}%`}
+                      valorNegociado={`${valorBalao.corretora}%`}
                     ></BalaoValor>
                     <div className="h-1 w-20 top-[-30] relative bg-(--cor-borda)"></div>
                   </div>
@@ -524,11 +539,11 @@ export default function Empresa() {
                   onClick={() => adicionarInteração()}
                 ></Botao>
               </div>
-              {empresaEncontrada?.historicoInteracao == null ? (
+              {empresaEncontrada?.historicoInteracoes == null ? (
                 <p>Nenhuma informação encontrada</p>
               ) : (
                 <Tabela
-                  dadosRecebidos={empresaEncontrada?.historicoInteracao}
+                  dadosRecebidos={empresaEncontrada?.historicoInteracoes}
                 ></Tabela>
               )}
             </div>
